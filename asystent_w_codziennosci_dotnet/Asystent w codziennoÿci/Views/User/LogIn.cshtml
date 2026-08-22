@@ -1,0 +1,22 @@
+﻿@model AssistantLogic.ViewModel.UserLoginVM
+@{
+    ViewData["Title"] = "Logowanie";
+}
+
+@using (Html.BeginForm("LogIn", "User", FormMethod.Post, new { @class = "needs-validation" }))
+{
+    <div class="input-group mb-3 has-validation">
+        <span class="input-group-text">Login:</span>
+        @Html.TextBoxFor(m => m.Username, new { @class = "needs-validation" })
+    </div>
+    <div class="input-group mb-3 has-validation">
+        <span class="input-group-text">Hasło:</span>
+        @Html.PasswordFor(m => m.Password, new { @class = "needs-validation" })
+    </div>
+    <input type="submit" value="Zaloguj się" class="btn btn-primary" />
+   
+    <p>@Model.Message</p>
+}
+
+
+

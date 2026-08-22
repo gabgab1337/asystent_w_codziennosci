@@ -1,0 +1,133 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Asystent_w_codzienności
+build_property.RootNamespace = Asystent_w_codzienności
+build_property.ProjectDir = F:\Asystent w Codzienności\Asystent w codziennoÿci70\Asystent w codziennoÿci\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = F:\Asystent w Codzienności\Asystent w codziennoÿci70\Asystent w codziennoÿci
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/ASD/CurrentActivity.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQVNEXEN1cnJlbnRBY3Rpdml0eS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/ASD/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQVNEXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/ASD/PlanDay.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQVNEXFBsYW5EYXkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/ASD/PlanDayPreview.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQVNEXFBsYW5EYXlQcmV2aWV3LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Point/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9pbnRcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Shared/_ActualActivity.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BY3R1YWxBY3Rpdml0eS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Task/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFza1xBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Task/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFza1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Task/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFza1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Task/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFza1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Trigger/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpZ2dlclxBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Trigger/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpZ2dlclxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Trigger/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpZ2dlclxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/User/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/User/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/User/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/User/LogIn.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxMb2dJbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/User/PermitionDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxQZXJtaXRpb25EZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/User/Properties.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxQcm9wZXJ0aWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/User/Proteges.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxQcm90ZWdlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Asystent w Codzienności/Asystent w codziennoÿci70/Asystent w codziennoÿci/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-dyvsncyfd2

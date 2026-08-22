@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "AsystenDatabase\\AssistantDatabase.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "AssistantLogic\\AssistantLogic.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

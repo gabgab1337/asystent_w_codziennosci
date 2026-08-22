@@ -1,0 +1,337 @@
+﻿@using AsystentView.Common
+
+@model AssistantLogic.ViewModel.TriggerAddEditVM
+@{
+    ViewData["Title"] = "Dodawanie wyzwalacza";
+}
+@using (Html.BeginForm("Add", "Trigger", FormMethod.Post, new { @class = "needs-validation" }))
+{
+    <div class="input-group mb-3 has-validation">
+        <span class="input-group-text">Nazwa wyzwalacza:</span>
+        @Html.TextBoxFor(m => m.Name, new 
+            { 
+                @class = "form-control custom-width " 
+                + Validation.GetValidationClass(ViewData.ModelState, "Name")
+            })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["Name"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation">
+        <span class="input-group-text">Typ wyzwalacza:</span>
+        @Html.DropDownListFor(x => x.Type, Model.Types, new 
+            { 
+                @class = "form-control custom-width "
+                + Validation.GetValidationClass(ViewData.ModelState, "Type"),
+                id = "baseType" 
+            })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["Type"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="subTypeRowTime">
+        <span class="input-group-text">Podtyp wyzwalacza czasu:</span>
+        @Html.DropDownListFor(x => x.TimeType, Model.TimeTypes, new 
+            { 
+                @class = "form-control custom-width " 
+                + Validation.GetValidationClass(ViewData.ModelState, "TimeType"), id = "subTypeTime" 
+            })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["TimeType"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="subTypeRowWeather">
+        <span class="input-group-text">Podtyp wyzwalacza pogody:</span>
+        @Html.DropDownListFor(x => x.WeatherType, Model.WeatherTypes, new 
+            { 
+                @class = "form-control custom-width "
+                + Validation.GetValidationClass(ViewData.ModelState, "WeatherType"), id = "subTypeWeather"
+            })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["WeatherType"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="dateRow">
+        <span class="input-group-text">Data:</span>
+        @Html.EditorFor(model => model.SelectedDate, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "SelectedDate") })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["SelectedDate"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="dateRange">
+        <span class="input-group-text">Data: od</span>
+        @Html.EditorFor(model => model.BeginDate, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "BeginDate") })
+        <span class="input-group-text">do</span>
+        @Html.EditorFor(model => model.EndDate, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "EndDate") })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["BeginDate"]?.Errors.FirstOrDefault()?.ErrorMessage
+            @ViewData.ModelState["EndDate"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="weekDayRow">
+        <span class="input-group-text">Dzień tygodnia:</span>
+        @Html.DropDownListFor(x => x.WeekDayType, Model.WeekDayTypes, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "WeekDayType") })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["WeekDayType"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="dateInterval">
+        <span class="input-group-text">Data początkowa:</span>
+        @Html.EditorFor(model => model.SelectedDateStartInterval, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "SelectedDateStartInterval") })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["SelectedDateStartInterval"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="dateInterval2">
+        <span class="input-group-text">Odstęp czasowy:</span>
+        @Html.DropDownListFor(x => x.DateIntervalType, Model.DateIntervalTypes, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "DateIntervalType") })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["DateIntervalType"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="rainFall">
+        <span class="input-group-text">Opady deszczu: od</span>
+        @Html.DropDownListFor(x => x.MinRainFall, Model.RainLevels, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "MinRainFall") })
+        <span class="input-group-text">" do "</span>
+        @Html.DropDownListFor(x => x.MaxRainFall, Model.RainLevels, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "MaxRainFall") })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["MinRainFall"]?.Errors.FirstOrDefault()?.ErrorMessage
+            @ViewData.ModelState["MaxRainFall"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="snowFall">
+        <span class="input-group-text">"Opady śniegu: od "</span>
+        @Html.DropDownListFor(x => x.MinSnowFall, Model.SnowLevels, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "MinSnowFall") })
+        <span class="input-group-text">" do "</span>
+        @Html.DropDownListFor(x => x.MaxSnowFall, Model.SnowLevels, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "MaxSnowFall") })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["MinSnowFall"]?.Errors.FirstOrDefault()?.ErrorMessage
+            @ViewData.ModelState["MaxSnowFall"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="temperature">
+        <span class="input-group-text">"Temperatura: od "</span>
+        @Html.TextBoxFor(model => model.MinTemperature, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "MinTemperature") })
+        
+        <span class="input-group-text">" do "</span>
+        @Html.TextBoxFor(model => model.MaxTemperature, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "MaxTemperature") })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["MaxTemperature"]?.Errors.FirstOrDefault()?.ErrorMessage
+            @ViewData.ModelState["MinTemperature"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="windPower">
+        <span class="input-group-text">"Siła wiatru: od "</span>
+        @Html.DropDownListFor(x => x.MinWindPower, Model.WindLevels, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "MinWindPower") })
+        <span class="input-group-text">" do "</span>
+        @Html.DropDownListFor(x => x.MaxWindPower, Model.WindLevels, new { @class = "form-control custom-width " + Validation.GetValidationClass(ViewData.ModelState, "MaxWindPower") })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["MinWindPower"]?.Errors.FirstOrDefault()?.ErrorMessage
+            @ViewData.ModelState["MaxWindPower"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+   
+    <br />
+    
+    <input type="submit" value="Zapisz" class="btn btn-primary" />
+    @Html.ActionLink("Anuluj", "Index", "Trigger", null, new { @class = "btn btn-info" })
+    
+}
+
+<script>
+
+    
+
+    function showDependOnTypeTime(controls) {
+
+        let indexBaseType = controls.baseType.prop('selectedIndex');
+        if (indexBaseType != 1) {
+            controls.dateRow.hide();
+            controls.dateRange.hide();
+            controls.weekDayRow.hide();
+            controls.dateInterval.hide();
+            controls.dateInterval2.hide();
+            return;
+        }
+            
+        let index = controls.subTypeTime.prop('selectedIndex');
+        if (index == 0) {//None
+            controls.dateRow.hide();
+            controls.dateRange.hide();
+            controls.weekDayRow.hide();
+            controls.dateInterval.hide();
+            controls.dateInterval2.hide();
+        }
+        else if (index == 1) {//Data
+            controls.dateRow.show();
+            controls.dateRange.hide();
+            controls.weekDayRow.hide();
+            controls.dateInterval.hide();
+            controls.dateInterval2.hide();
+        }
+        else if (index == 2) {//DateRange
+            controls.dateRow.hide();
+            controls.dateRange.show();
+            controls.weekDayRow.hide();
+            controls.dateInterval.hide();
+            controls.dateInterval2.hide();
+        }
+        else if (index == 3) {//WeekDay
+            controls.dateRow.hide();
+            controls.dateRange.hide();
+            controls.weekDayRow.show();
+            controls.dateInterval.hide();
+            controls.dateInterval2.hide();
+        }
+        else if (index == 4) {//DateInterval
+            controls.dateRow.hide();
+            controls.dateRange.hide();
+            controls.weekDayRow.hide();
+            controls.dateInterval.show();
+            controls.dateInterval2.show();
+        }
+        else if (index == 5) {//WorkingDay
+            controls.dateRow.hide();
+            controls.dateRange.hide();
+            controls.weekDayRow.hide();
+            controls.dateInterval.hide();
+            controls.dateInterval2.hide();
+        }
+        else if (index == 6) {//Weekend
+            controls.dateRow.hide();
+            controls.dateRange.hide();
+            controls.weekDayRow.hide();
+            controls.dateInterval.hide();
+            controls.dateInterval2.hide();
+        }
+    }
+
+    function showDependOnTypeWeather(controls) {
+
+        let indexBaseType = controls.baseType.prop('selectedIndex');
+        if (indexBaseType != 2) {
+            controls.temperature.hide();
+            controls.rainFall.hide();
+            controls.snowFall.hide();
+            controls.windPower.hide();
+            return;
+        }
+        
+        let index = controls.subTypeWeather.prop('selectedIndex');
+        if (index == 0) {
+            controls.temperature.show();
+            controls.rainFall.hide();
+            controls.snowFall.hide();
+            controls.windPower.show();
+        }
+        if (index == 3) {//Rain
+            controls.temperature.show();
+            controls.rainFall.show();
+            controls.snowFall.hide();
+            controls.windPower.show();
+        }
+        else if (index == 4) {//Snow
+            controls.temperature.show();
+            controls.rainFall.hide();
+            controls.snowFall.show();
+            controls.windPower.show();
+        }
+        else {
+            controls.temperature.show();
+            controls.rainFall.hide();
+            controls.snowFall.hide();
+            controls.windPower.show();
+        }
+    }
+
+    function showDependOnBaseType(controls) {
+        showDependOnTypeTime(controls);
+        showDependOnTypeWeather(controls);
+
+        let index = controls.baseType.prop('selectedIndex');
+        
+        //console.log("Zmieniono zaznaczenie w combo boxie! "+index);
+        if (index == 0) {//None
+            controls.subTypeRowTime.hide();
+            controls.subTypeRowWeather.hide();
+            controls.temperature.hide();
+            controls.windPower.hide();
+        }
+        else if (index == 1) {//Time
+            controls.subTypeRowTime.show();
+            controls.subTypeTime.show();
+            controls.subTypeRowWeather.hide();
+            controls.subTypeWeather.hide();
+            controls.temperature.hide();
+            controls.windPower.hide();
+        }
+        if (index == 2) {//Weather
+            controls.subTypeRowTime.hide();
+            controls.subTypeTime.hide();
+            controls.subTypeRowWeather.show();
+            controls.subTypeWeather.show();
+            controls.temperature.show();
+            controls.windPower.show();
+
+        }
+        else if (index == 3) {//RandomEvent
+            controls.subTypeRowTime.hide();
+            controls.subTypeTime.hide();
+            controls.subTypeRowWeather.hide();
+            controls.subTypeWeather.hide();
+            controls.temperature.hide();
+            controls.windPower.hide();
+        }
+    }
+
+
+    window.onload = function () {
+
+        var controls = {};
+
+        controls.baseType = $("#baseType");
+        controls.subTypeRowTime = $("#subTypeRowTime");
+        controls.subTypeTime = $("#subTypeTime");
+        controls.subTypeRowWeather = $("#subTypeRowWeather");
+        controls.subTypeWeather = $("#subTypeWeather");
+        controls.dateRow = $("#dateRow");
+        controls.dateRange = $("#dateRange");
+        controls.weekDayRow = $("#weekDayRow");
+        controls.dateInterval = $("#dateInterval");
+        controls.dateInterval2 = $("#dateInterval2");
+        controls.temperature = $("#temperature");
+        controls.rainFall = $("#rainFall");
+        controls.snowFall = $("#snowFall");
+        controls.windPower = $("#windPower ");
+
+        showDependOnBaseType(controls);
+        showDependOnTypeTime(controls);
+        showDependOnTypeWeather(controls);
+
+        controls.baseType.change(function () {
+            showDependOnBaseType(controls);
+        });
+
+        controls.subTypeTime.change(function () {
+            showDependOnTypeTime(controls);
+        });   
+        controls.subTypeWeather.change(function () {
+            showDependOnTypeWeather(controls);
+        });
+    }
+
+</script>
+
+

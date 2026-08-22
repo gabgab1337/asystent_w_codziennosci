@@ -1,0 +1,149 @@
+﻿@using AsystentView.Common
+
+@model AssistantLogic.ViewModel.TaskAddEditVM
+@{
+    ViewData["Title"] = "Edycja zadania";
+}
+
+@using (Html.BeginForm("Update", "Task", FormMethod.Post, new { @class = "needs-validation" }))
+{
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="input-group mb-3 has-validation">
+        <span class="input-group-text">Nazwa zadania:</span>
+        @Html.TextBoxFor(m => m.Name, new
+            {
+                @class = "form-control custom-width "
+                + Validation.GetValidationClass(ViewData.ModelState, "Name")
+            })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["Name"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text">Opis zadania:</span>
+        @Html.TextAreaFor(x => x.Description, new { @class = "form-control", @rows = "4", @cols = "50" })
+    </div>
+
+    <div class="mb-3 form-check form-switch">
+        @Html.CheckBoxFor(x => x.AnchorBegin, new { @class = "form-check-input", id = "AnchorBegin" })
+        <label class="form-check-label" for="AnchorBegin">Zadanie rozpoczyna się o określonym czasie</label>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="AnchorBeginTime">
+        <span class="input-group-text">Czas rozpoczęcia:</span>
+        @Html.TextBoxFor(m => m.TimeBegin, new {
+                @class = "form-control custom-width "
+                + Validation.GetValidationClass(ViewData.ModelState, "TimeBegin"),
+                type = "time"
+            })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["TimeBegin"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="Time">
+        <span class="input-group-text">Czas trwania</span>
+        <span class="input-group-text">godz: </span>
+        @Html.TextBoxFor(m => m.Hours, new { @class = "form-control custom-width readonly-input" + Validation.GetValidationClass(ViewData.ModelState, "Hours"), id = "Hours" })
+        <span class="input-group-text"> min: </span>
+        @Html.TextBoxFor(m => m.Minutes, new { @class = "form-control custom-width readonly-input" + Validation.GetValidationClass(ViewData.ModelState, "Minutes"), id = "Minutes" })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["Hours"]?.Errors.FirstOrDefault()?.ErrorMessage
+            @ViewData.ModelState["Minutes"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+
+
+    <div class="mb-3 form-check form-switch">
+        @Html.CheckBoxFor(x => x.AnchorEnd, new { @class = "form-check-input", id = "AnchorEnd" })
+        <label class="form-check-label" for="AnchorEnd">Zadanie kończy się o określonym czasie</label>
+    </div>
+
+    <div class="input-group mb-3 has-validation" id="AnchorEndTime">
+        <span class="input-group-text">Czas zakończenia:</span>
+        @Html.TextBoxFor(m => m.TimeEnd, new
+            {
+                @class = "form-control custom-width "
+                + Validation.GetValidationClass(ViewData.ModelState, "TimeEnd"),
+                type = "time"
+            })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["TimeEnd"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+       
+    <br />
+    <input type="submit" value="Zapisz" class="btn btn-primary" />
+    @Html.ActionLink("Anuluj", "Index", "Task", null, new { @class = "btn btn-info" })
+
+
+}
+
+<script>
+    window.onload = function () {
+        const anchorBegin = $("#AnchorBegin");
+        const anchorEnd = $("#AnchorEnd");
+        const anchorBeginTime = $("#AnchorBeginTime");
+        const anchorEndTime = $("#AnchorEndTime");
+        const hoursField = $("#Hours");
+        const minutesField = $("#Minutes");
+
+        // Funkcja do dynamicznego ustawiania widoczności i readonly
+        function toggleFields() {
+            // Zarządzanie widocznością pól czasu rozpoczęcia i zakończenia
+            anchorBeginTime.toggle(anchorBegin.is(':checked'));
+            anchorEndTime.toggle(anchorEnd.is(':checked'));
+
+            // Ustawienie pól "Czas trwania" jako readonly, jeśli oba checkboxy są zaznaczone
+            const makeReadonly = anchorBegin.is(':checked') && anchorEnd.is(':checked');
+            hoursField.prop("readonly", makeReadonly);
+            minutesField.prop("readonly", makeReadonly);
+
+            // Jeśli oba checkboxy zaznaczone, oblicz czas trwania
+            if (makeReadonly) {
+                calculateDuration();
+            }
+        }
+
+        // Funkcja do obliczenia czasu trwania na podstawie pól czasu
+        function calculateDuration() {
+            const startTime = $("#TimeBegin").val();
+            const endTime = $("#TimeEnd").val();
+
+            if (startTime && endTime) {
+                const start = new Date(`1970-01-01T${startTime}:00`);
+                const end = new Date(`1970-01-01T${endTime}:00`);
+
+                if (end < start) {
+                    alert("Czas zakończenia musi być po czasie rozpoczęcia!");
+                    return;
+                }
+
+                const diffMs = end - start;
+                const diffMinutes = Math.floor(diffMs / (1000 * 60));
+                const hours = Math.floor(diffMinutes / 60);
+                const minutes = diffMinutes % 60;
+
+                // Aktualizacja pól "Czas trwania"
+                hoursField.val(hours);
+                minutesField.val(minutes);
+            }
+        }
+
+        // Obsługa zmian w checkboxach
+        anchorBegin.change(toggleFields);
+        anchorEnd.change(toggleFields);
+
+        // Obsługa zmian w polach czasu rozpoczęcia i zakończenia
+        $("#TimeBegin, #TimeEnd").change(function () {
+            if (anchorBegin.is(':checked') && anchorEnd.is(':checked')) {
+                calculateDuration();
+            }
+        });
+
+        // Początkowe ustawienia widoczności pól
+        toggleFields();
+    };
+</script>

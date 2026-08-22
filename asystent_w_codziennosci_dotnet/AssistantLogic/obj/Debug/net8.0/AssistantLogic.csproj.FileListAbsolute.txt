@@ -1,0 +1,15 @@
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\bin\Debug\net8.0\AssistantLogic.deps.json
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\bin\Debug\net8.0\AssistantLogic.dll
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\bin\Debug\net8.0\AssistantLogic.pdb
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\bin\Debug\net8.0\AssistantDatabase.dll
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\bin\Debug\net8.0\AssistantDatabase.pdb
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\AssistantLogic.csproj.AssemblyReference.cache
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\AssistantLogic.GeneratedMSBuildEditorConfig.editorconfig
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\AssistantLogic.AssemblyInfoInputs.cache
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\AssistantLogic.AssemblyInfo.cs
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\AssistantLogic.csproj.CoreCompileInputs.cache
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\Assistan.EB3D71BD.Up2Date
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\AssistantLogic.dll
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\refint\AssistantLogic.dll
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\AssistantLogic.pdb
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\ref\AssistantLogic.dll

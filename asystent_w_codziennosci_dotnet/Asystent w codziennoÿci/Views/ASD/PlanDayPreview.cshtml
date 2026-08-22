@@ -1,0 +1,97 @@
+﻿@using AssistantLogic.Common
+
+@model AssistantLogic.ViewModel.PlanDayPreviewVM
+@{
+    ViewData["Title"] = "Plan dnia";
+}
+<span class="input-group-text" style="display: inline-block; width: auto;">Wybrany podopieczny: @Model.actualProtegeName</span>
+<br />
+<br />
+@using (Html.BeginForm("PlanDayPreview", "ASD", FormMethod.Post))
+{
+    <div class="input-group mb-3">
+        <span class="input-group-text">Data:</span>
+        @Html.EditorFor(model => model.Parameters.CurrentDateTime)
+    </div>
+    
+    <div class="input-group mb-3">
+        <span class="input-group-text">Temperatura:</span>
+        @Html.TextBoxFor(model => model.Parameters.Weather.Temperature)
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Siła wiatru:</span>
+        @Html.DropDownListFor(model => model.Parameters.Weather.WindPower, Model.WindLevels)
+    </div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text">Typ pogody:</span>
+        @Html.DropDownListFor(model => model.Parameters.Weather.WeatherType, Model.WeatherTypes, new { id = "subTypeWeather" })
+    </div>
+
+    <div id="rainFall" class="input-group mb-3">
+        <span class="input-group-text">Opady deszczu:</span>
+        @Html.DropDownListFor(model => model.Parameters.Weather.RainFall, Model.RainLevels)
+    </div>
+
+    <div id="snowFall" class="input-group mb-3">
+        <span class="input-group-text">Opady śniegu:</span>
+        @Html.DropDownListFor(model => model.Parameters.Weather.SnowFall, Model.SnowLevels)
+    </div>
+
+    <br />
+
+    <input type="submit" value="Odśwież" class="btn btn-primary" />
+}
+
+    <ul>
+        @foreach (var task in @Model.Tasks)
+        {
+            <li>
+                <h3>@task.Name</h3>
+                <p>@task.Description</p>
+                <p>
+                    @task.TimeBegin - @task.TimeEnd
+                    @if (task.Message != null && !task.MessagePositiv)
+                    {
+                        <span class="badge bg-danger text-light">@task.Message</span>
+                    }
+                    else if (task.Message != null && task.MessagePositiv)
+                    {
+                        <span class="badge bg-success text-light">@task.Message</span>
+                    }
+                </p>
+
+
+
+                @foreach (var point in @task.Points)
+                {
+
+                    @if (@point.State == AssistantLogic.ViewModel.RealizationState.Done)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" checked disabled>
+                            <label class="form-check-label">
+                                @point.Name
+                            </label><br />
+                            <label class="form-check-label">
+                                @point.Description
+                            </label><br />
+                        </div>
+                    }
+                    else if (@point.State == AssistantLogic.ViewModel.RealizationState.ToDo)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" disabled>
+                            <label class="form-check-label">
+                                @point.Name
+                            </label><br />
+                            <label class="form-check-label">
+                                @point.Description
+                            </label><br />
+                        </div>
+                    }
+                }
+            </li>
+        }
+    </ul>
+

@@ -1,0 +1,38 @@
+:root {
+    --bs-myColor-000: white;
+    --bs-myColor-100: #d1e7dd; /* Tint 80% */
+    --bs-myColor-200: #a3cfbb; /* Tint 60% */
+    --bs-myColor-300: #75b798; /* Tint 40% */
+    --bs-myColor-400: #479f76; /* Tint 20% */
+    --bs-myColor-500: #198754; /* Original green */
+    --bs-myColor-600: #146c43; /* Shade 20% */
+    --bs-myColor-700: #0f5132; /* Shade 40% */
+    --bs-myColor-800: #0a3622; /* Shade 60% */
+    --bs-myColor-900: #051b11; /* Shade 80% */
+    --bs-myColor-1000: black;
+}
+
+body, html {
+    background-color: var(--bs-blue-100);
+}
+
+
+nav.navbar {
+    background-color: var(--bs-blue-600) !important; /* T³o paska nawigacyjnego */
+    color: var(--bs-blue-000) !important; /* Kolor tekstu */
+}
+
+    nav.navbar .navbar-brand,
+    nav.navbar .nav-link {
+        color: var(--bs-blue-000) !important; /* Kolor tekstu dla linków w nawigacji */
+    }
+
+    nav.navbar .navbar-toggler-icon {
+        background-color: var(--bs-blue-500) !important; /* Kolor ikony przycisku rozwijania menu */
+    }
+
+    .input-group-text {
+    background-color: var(--bs-blue-500) !important; /* T³o dla elementu */
+    color: #ffffff !important; /* Kolor tekstu */
+    border-color: var(--bs-blue-800) !important; /* Kolor obramowania */
+}

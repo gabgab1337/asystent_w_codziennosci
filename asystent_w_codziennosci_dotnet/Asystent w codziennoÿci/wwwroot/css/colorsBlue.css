@@ -1,0 +1,13 @@
+:root {
+    --bs-myColor-000: white;
+    --bs-myColor-100: #cfe2ff; 
+    --bs-myColor-200: #9ec5fe;
+    --bs-myColor-300: #6ea8fe; 
+    --bs-myColor-400: #3d8bfd;
+    --bs-myColor-500: #0d6efd; 
+    --bs-myColor-600: #0a58ca; 
+    --bs-myColor-700: #084298; 
+    --bs-myColor-800: #052c65; 
+    --bs-myColor-900: #031633; 
+    --bs-myColor-1000: black;
+}

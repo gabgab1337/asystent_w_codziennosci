@@ -1,0 +1,30 @@
+﻿@using AssistantLogic.Common
+
+@model List<AssistantLogic.ViewModel.PlanDayTaskVM>
+@{
+    ViewData["Title"] = "Plan dnia";
+}
+
+ @foreach (var task in @Model)
+{
+    <h3>@task.Name</h3>
+    <p>@task.Description</p>
+
+    <ul>
+        @foreach (var point in @task.Points)
+        {
+            <li>
+                <dt>@point.Name</dt>
+                <dd>@point.Description<br />
+                        @using (Html.BeginForm("CheskPoint", "ASD", FormMethod.Post))
+                        {
+                            @Html.Hidden("id", @point.Id)
+                            <input type="submit" value="Usuń" class="btn btn-danger" />
+                        }
+                </dd>
+            </li>
+        }
+    </ul>
+}
+
+</table>

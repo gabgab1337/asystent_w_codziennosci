@@ -1,0 +1,41 @@
+﻿@using AssistantLogic.Common
+@using AssistantLogic.ViewModel
+@model AssistantLogic.ViewModel.PropertiesVM
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Kolor</th>
+            <th>Wybierz</th>
+        </tr>
+    </thead>
+    <tbody>
+         @foreach (var color in @Model.Colors)
+        {
+        <tr>
+            <td> <span class="badge bg-warning text-dark" style="background-color: @color.Value !important;">@color.Description</span></td>
+            <td>
+                    @using (Html.BeginForm("SelectColor", "User", FormMethod.Post, new { @class = "d-inline-block" }))
+                    {
+                        @Html.Hidden("color", color.Name)
+                        @if (Model.SelectedColor == color.Name)
+                        {
+                            <input type="submit" value="Wybrany" disabled class="btn btn-success" />
+                        }
+                        else
+                        {
+                            <input type="submit" value="Wybierz" class="btn btn-success" />
+                        }
+                    }
+           
+            </td>
+        </tr>
+        
+        }
+        
+       
+    </tbody>
+</table>

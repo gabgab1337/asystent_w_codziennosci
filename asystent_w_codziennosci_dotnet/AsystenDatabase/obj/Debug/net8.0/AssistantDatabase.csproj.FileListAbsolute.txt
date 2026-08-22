@@ -1,0 +1,14 @@
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\bin\Debug\net8.0\AssistantDatabase.deps.json
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\bin\Debug\net8.0\AssistantDatabase.runtimeconfig.json
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\bin\Debug\net8.0\AssistantDatabase.dll
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\bin\Debug\net8.0\AssistantDatabase.pdb
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.csproj.AssemblyReference.cache
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.GeneratedMSBuildEditorConfig.editorconfig
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.AssemblyInfoInputs.cache
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.AssemblyInfo.cs
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.csproj.CoreCompileInputs.cache
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.dll
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\refint\AssistantDatabase.dll
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.pdb
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.genruntimeconfig.cache
+F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\ref\AssistantDatabase.dll

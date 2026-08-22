@@ -1,0 +1,170 @@
+﻿@using AssistantLogic.Common
+@using AssistantLogic.ViewModel
+@model AssistantLogic.ViewModel.ListTaskBaseInformationVM
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+
+<div class="modal fade" id="deleteConfirm" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmLabel">Potwierdzenie usunięcia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                <p>Czy na pewno chcesz usunąć zadanie <strong id="deleteTaskName"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("Delete", "Task", FormMethod.Post, new { @class = "d-inline-block" }))
+                {
+                    <input type="hidden" id="modalDeleteTaskId" name="id" />
+                    <button type="submit" class="btn btn-danger">Usuń</button>
+                }
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Anuluj</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDeleteTaskModalData(taskId, taskName) {
+        document.getElementById('modalDeleteTaskId').value = taskId;
+        document.getElementById('deleteTaskName').textContent = taskName;
+    }
+</script>
+
+<style>
+    #deleteTaskName {
+        word-wrap: break-word; /* Zawijanie w razie potrzeby */
+        overflow-wrap: break-word; /* Kompatybilność z nowoczesnymi przeglądarkami */
+        white-space: normal; /* Zawijanie wierszy */
+    }
+</style>
+<style>
+    .table .actions-column {
+        min-width: 300px; /* Dostosuj wartość według potrzeb */
+        white-space: nowrap; /* Zapobiega zawijaniu wierszy */
+    }
+
+    .table td,
+    .table th {
+        white-space: nowrap; /* Zapobiega zawijaniu w każdej komórce tabeli */
+    }
+</style>
+<span class="input-group-text" style="display: inline-block; width: auto;">Wybrany podopieczny: @Model.actualProtegeName</span>
+<br />
+<br />
+@Html.ActionLink("Dodaj zadanie", "Add", "Task", null, new { @class = "btn btn-success" })
+<br />
+@using (Html.BeginForm("Tasks", "Task", FormMethod.Post))
+{
+    <div class="input-group mb-3">
+        <span class="input-group-text">Dzień tygodnia:</span>
+        @Html.DropDownListFor(x => x.WeekDayType, Model.WeekDayTypes, new { id = "weekDayTypes" })
+        <input type="submit" value="Odśwież" class="btn btn-primary" />
+    </div>
+}
+
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Start</th>
+            <th>Czas</th>
+            <th>Stop</th>
+            <th>Linia czasu</th>
+            <th>Wyzwalacze</th>
+            <th>Przestawienia</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in @Model.Tasks)
+        {
+            <tr>
+                <td>@task.Name</td>
+                @if(task.AnchorBegin)
+                {
+                    <td>@task.TimeBegin</td>
+                }
+                else
+                {
+                    <td>N/A</td>
+                }
+                <td>@task.Time</td>
+                @if (task.AnchorEnd)
+                {
+                    <td>@task.TimeEnd</td>
+                }
+                else
+                {
+                    <td>N/A</td>
+                }
+                <td>
+                    @if (task.AnchorBegin && task.AnchorEnd)
+                    {
+                        <img src="~/timeLineBeginEnd2.png" alt="Ikona" style="width:60px;height:26px;">
+                    }
+                    else if(task.AnchorBegin && !task.AnchorEnd)
+                    {
+                        <img src="~/timeLineBegin2.png" alt="Ikona" style="width:60px;height:26px;">
+                    }
+                    else if (!task.AnchorBegin && task.AnchorEnd)
+                    {
+                        <img src="~/timeLineEnd2.png" alt="Ikona" style="width:60px;height:26px;">
+                    }
+                    else if (!task.AnchorBegin && !task.AnchorEnd)
+                    {
+                        <img src="~/timeLine2.png" alt="Ikona" style="width:60px;height:26px;">
+                    }
+
+                </td>
+                <td>
+                    <p class="h6">
+                        @foreach (var trigger in task.Triggers)
+                        {
+                            <span class="badge bg-warning text-dark">@trigger</span>
+                        }
+                    </p>
+                </td>
+                <td>
+                    @using (Html.BeginForm("UpTask", "Task", FormMethod.Post, new { @class = "d-inline-block" }))
+                    {
+                        @Html.Hidden("id", task.Id)
+                        <button type="submit" class="btn btn-primary btn-sm me-1">
+                            <img src="~/arrow_up.png" alt="Ikona" style="width:20px;height:20px;">
+                        </button>
+                    }
+                    @using (Html.BeginForm("DownTask", "Task", FormMethod.Post, new { @class = "d-inline-block" }))
+                    {
+                        @Html.Hidden("id", task.Id)
+
+                        <button type="submit" class="btn btn-primary btn-sm me-1">
+                            <img src="~/arrow_down.png" alt="Ikona" style="width:20px;height:20px;">
+                        </button>
+                    }
+                </td>
+                <td class="actions-column">
+                    @using (Html.BeginForm("Edit", "Task", FormMethod.Post, new { @class = "d-inline-block" }))
+                    {
+                        @Html.Hidden("id", task.Id)
+                        <input type="submit" value="Edytuj" class="btn btn-primary btn-sm me-1" />
+                    }
+                    @using (Html.BeginForm("Details", "Task", FormMethod.Post, new { @class = "d-inline-block" }))
+                    {
+                        @Html.Hidden("id", task.Id)
+                        <input type="submit" value="Szczegoły" class="btn btn-primary btn-sm me-1" />
+                    }
+                    <button type="button" class="btn btn-danger btn-sm me-1" data-bs-toggle="modal"
+                            data-bs-target="#deleteConfirm"
+                            onclick="setDeleteTaskModalData('@task.Id', '@task.Name')">
+                        Usuń
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

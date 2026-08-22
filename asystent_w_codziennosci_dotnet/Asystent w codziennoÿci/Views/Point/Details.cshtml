@@ -1,0 +1,214 @@
+﻿@using AssistantLogic.Common
+
+@model AssistantLogic.ViewModel.PointDetailsVM
+@{
+    ViewData["Title"] = "Szczegóły podzadania";
+}
+
+<!--Trigger Modal -->
+<div class="modal fade" id="triggerModal" tabindex="-1" aria-labelledby="triggerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="max-width: 90%; min-width: 800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="triggerModalLabel">Dodawanie wyzwalaczy</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                <style>
+                    /* Wymuszenie stałej szerokości kolumn i brak zawijania */
+                    .table {
+                        table-layout: fixed; /* Stała szerokość kolumn */
+                        width: 100%; /* Tabela zajmuje całą szerokość */
+                    }
+
+                        .table th, .table td {
+                            overflow: hidden; /* Ukrycie nadmiaru tekstu */
+                            text-overflow: ellipsis; /* Dodanie wielokropka, jeśli tekst się nie mieści */
+                            white-space: nowrap; /* Brak łamania wierszy */
+                        }
+
+                    /* Stylowanie sekcji z przyciskami */
+                    .modal-actions {
+                        display: flex; /* Ustaw przyciski w jednej linii */
+                        flex-wrap: nowrap; /* Wyłącz łamanie linii */
+                        gap: 5px; /* Odstępy między przyciskami */
+                    }
+                </style>
+                <table>
+                    <tr>
+                        <th>Nazwa</th>
+                        <th>Typ</th>
+                        <th>Podtyp</th>
+                        <th>Opis</th>
+                        <th>Dodawanie</th>
+
+                    </tr>
+                    @foreach (var trigger in @Model.TriggersToAdd)
+                    {
+                        <tr>
+                            <td>@trigger.Name</td>
+                            <td>@trigger.Type.GetEnumDescription()</td>
+                            <td>@trigger.SubType</td>
+                            <td>@trigger.Description</td>
+                            <td class="modal-actions">
+                                @using (Html.BeginForm("AddTrigger", "Point", FormMethod.Post))
+                                {
+                                    @Html.Hidden("pointId", Model.Id)
+                                    @Html.Hidden("triggerId", trigger.Id)
+                                    <input type="submit" value="Dodaj" class="btn btn-primary" />
+                                }
+                                @using (Html.BeginForm("AddNegationTrigger", "Point", FormMethod.Post))
+                                {
+                                    @Html.Hidden("pointId", Model.Id)
+                                    @Html.Hidden("triggerId", trigger.Id)
+                                    <input type="submit" value="Dodaj negacje" class="btn btn-primary" />
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Point Modal -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">Dodawanie punktu do zadania</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AddPoint", "Task", FormMethod.Post))
+                {
+                    @Html.Hidden("taskId", Model.Id)
+
+                    @Html.Label("Nazwa zadania:")
+                  //  @Html.TextBoxFor(model => model.Point.Name)
+                  
+                    <br />
+
+                    @Html.Label("Opis zadania:")
+                 //   @Html.TextAreaFor(model => model.Point.Description, new { @rows = "4", @cols = "50" })
+                    <br />
+                    <br />
+                    <input type="submit" value="Dodaj" class="btn btn-primary" />
+                    // @Html.ActionLink("Anuluj", "Index", "Task", null, new { @class = "btn btn-info" })
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+
+<script>
+    function setDeleteModalData(triggerId, triggerName) {
+        document.getElementById('deleteTriggerId').value = triggerId;
+        document.getElementById('deleteTriggerName').textContent = triggerName;
+    }
+</script>
+
+
+<div class="modal fade" id="deleteConfirm" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmLabel">Potwierdzenie usunięcia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                <p>Czy na pewno chcesz usunąć podzadanie <strong id="deleteTriggerName"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <!-- Formularz do usuwania punktu -->
+                @using (Html.BeginForm("RemoveTrigger", "Point", FormMethod.Post, new { @class = "d-inline-block" }))
+                {
+                    @Html.Hidden("pointId", Model.Id)
+                    <input type="hidden" id="deleteTriggerId" name="triggerId" />
+                    <button type="submit" class="btn btn-danger">Usuń</button>
+                }
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Anuluj</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table td,
+    .table th {
+        white-space: nowrap; /* Zapobiega zawijaniu w każdej komórce tabeli */
+    }
+</style>
+
+<h3>@Model.Name </h3>
+<br />
+@using (Html.BeginForm("Details", "Task", FormMethod.Post))
+{
+    @Html.Hidden("id", @Model.TaskId)
+    <input type="submit" value="Powrót do szczegółów zadania" class="btn btn-primary" />
+}
+<br />
+
+@if (Model.Description != null && Model.Description.Length > 0)
+{
+    @Model.Description
+    <br />
+    <br />
+}
+
+Zdjęcie:
+@if(@Model.Image == "Podzadanie nie zawiera zdjęcia")
+{
+    
+    @Model.Image <br /><br />
+}
+else
+{
+    <img src="@Model.Image" alt="Zdjęcie punktu" style="width:100px;height:100px;" /> 
+}
+</br>
+
+
+<hr style="border-top: 4px solid #000000;">
+
+<h5>Wyzwalacze:</h5>
+<br />
+
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#triggerModal">
+    Dodaj wyzwalacz
+</button>
+
+<table class="table table-striped table-hover text-wrap">
+    <thead>
+        <tr>
+            <th class="text-wrap" style="width: 20%;">Nazwa</th>
+            <th class="text-wrap" style="width: 15%;">Typ</th>
+            <th class="text-wrap" style="width: 15%;">Podtyp</th>
+            <th class="text-wrap" style="width: 40%;">Opis</th>
+            <th class="text-wrap" style="width: 10%;">Usuwanie</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trigger in @Model.Triggers)
+        {
+            <tr>
+                <td class="text-wrap" title="@trigger.Name">@trigger.Name</td>
+                <td class="text-wrap" title="@trigger.Type.GetEnumDescription()">@trigger.Type.GetEnumDescription()</td>
+                <td class="text-wrap" title="@trigger.SubType">@trigger.SubType</td>
+                <td class="text-wrap" title="@trigger.Description">@trigger.Description</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#deleteConfirm"
+                            onclick="setDeleteModalData('@trigger.Id', '@trigger.Name')">
+                        Usuń
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

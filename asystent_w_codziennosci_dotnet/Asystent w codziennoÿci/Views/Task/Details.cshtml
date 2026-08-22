@@ -1,0 +1,474 @@
+﻿@using AssistantLogic.Common
+
+@model AssistantLogic.ViewModel.TaskDetailsVM
+@{
+    ViewData["Title"] = "Szczegóły zadania";
+}
+
+<!--Trigger Modal -->
+<div class="modal fade" id="triggerModal" tabindex="-1" aria-labelledby="triggerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="max-width: 90%; min-width: 800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="triggerModalLabel">Dodawanie wyzwalaczy</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                <style>
+                    /* Zawijanie tekstu i elastyczna tabela */
+                    .table {
+                        table-layout: auto; /* Dynamiczna szerokość kolumn */
+                        width: 100%; /* Tabela zajmuje całą szerokość */
+                    }
+
+                        .table th, .table td {
+                            white-space: normal; /* Pozwól na łamanie tekstu */
+                            word-wrap: break-word; /* Zawijanie tekstu w razie potrzeby */
+                            text-overflow: ellipsis; /* Dodaj wielokropek dla nadmiarowego tekstu */
+                        }
+
+                    /* Stylowanie sekcji z przyciskami */
+                    .modal-actions {
+                        display: flex; /* Ustaw przyciski w jednej linii */
+                        gap: 5px; /* Odstępy między przyciskami */
+                        flex-wrap: wrap; /* Pozwól na zawijanie przycisków */
+                    }
+                </style>
+
+                <table class="table table-striped table-hover text-wrap">
+                    <thead>
+                        <tr>
+                            <th class="text-wrap" style="width: 20%;">Nazwa</th>
+                            <th class="text-wrap" style="width: 15%;">Typ</th>
+                            <th class="text-wrap" style="width: 15%;">Podtyp</th>
+                            <th class="text-wrap" style="width: 40%;">Opis</th>
+                            <th class="text-wrap" style="width: 10%;">Dodawanie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var trigger in @Model.TriggersToAdd)
+                        {
+                            <tr>
+                                <td class="text-wrap" title="@trigger.Name">@trigger.Name</td>
+                                <td class="text-wrap" title="@trigger.Type.GetEnumDescription()">@trigger.Type.GetEnumDescription()</td>
+                                <td class="text-wrap" title="@trigger.SubType">@trigger.SubType</td>
+                                <td class="text-wrap" title="@trigger.Description">@trigger.Description</td>
+                                <td class="modal-actions">
+                                    @using (Html.BeginForm("AddTrigger", "Task", FormMethod.Post))
+                                    {
+                                        @Html.Hidden("taskId", Model.Id)
+                                        @Html.Hidden("triggerId", trigger.Id)
+                                        <input type="submit" value="Dodaj" class="btn btn-primary btn-sm" />
+                                    }
+                                    @using (Html.BeginForm("AddNegationTrigger", "Task", FormMethod.Post))
+                                    {
+                                        @Html.Hidden("taskId", Model.Id)
+                                        @Html.Hidden("triggerId", trigger.Id)
+                                        <input type="submit" value="Dodaj negację" class="btn btn-primary btn-sm" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+<script>
+    function validateForm() {
+        // Pobierz wartości z formularza
+        var pointname = document.getElementById("pointName").value;
+
+        // Resetuj wiadomości błędów
+        document.getElementById("errorName").innerHTML = "";
+
+        var isValid = true;
+
+        // Walidacja nazwy użytkownika
+        if (pointname === "") {
+            document.getElementById("errorName").innerHTML = "Nazwa punktu jest wymagana.";
+            isValid = false;
+            $("#pointName").addClass("form-control custom-width is-invalid");
+        }
+        else if (pointname.length > 300) {
+            document.getElementById("errorName").innerHTML = "Nazwa punktu nie może przekraczać 300 znaków.";
+            isValid = false;
+            $("#pointName").addClass("form-control custom-width is-invalid");
+        }
+        else {
+            $("#pointName").addClass("form-control custom-width is-valid");
+        }
+
+        return isValid;
+    }
+</script>
+
+<!--Point Modal -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">Dodawanie punktu do zadania</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AddPoint", "Task", FormMethod.Post, new { onsubmit = "return validateForm();", enctype = "multipart/form-data" }))
+                {
+                    
+                    @Html.Hidden("taskId", Model.Id)
+
+                    <div class="input-group mb-3 has-validation" id="Name">
+                        <span class="input-group-text">Nazwa:</span>
+                        @Html.TextBoxFor(model => model.Point.Name, new
+                            {
+                                @class = "form-control custom-width",
+                                id = "pointName",
+                                maxlength = "300"
+                            })
+                        <div class="invalid-feedback d-block">
+                            @ViewData.ModelState["pointName"]?.Errors.FirstOrDefault()?.ErrorMessage
+                        </div>
+                        <span id="errorName" style="color:red;"></span>
+                    </div>
+                    <div class="input-group mb-3 has-validation">
+                        <span class="input-group-text">Opis:</span>
+                        @Html.TextAreaFor(model => model.Point.Description, new
+                            {
+                                @rows = "4",  @cols = "50"
+                            })
+                    </div>
+                    <div class="input-group mb-3 has-validation">
+                        <span class="input-group-text">Zdjęcie (opcjonalne)</span>
+                        <input type="file" name="Photo" class="form-control" id="Photo" />
+                    </div>
+                    <br />
+                    <input type="submit" value="Dodaj" class="btn btn-success" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateFormEdit() {
+        // Pobierz wartości z formularza
+        var pointname = document.getElementById("editPointName").value;
+
+        // Resetuj klasy walidacji
+        $("#editPointName").removeClass("is-invalid is-valid");
+
+        var isValid = true;
+
+        // Walidacja nazwy punktu
+        if (pointname === "") {
+            document.getElementById("errorEditName").innerHTML = "Nazwa punktu jest wymagana.";
+            isValid = false;
+            $("#editPointName").addClass("form-control custom-width is-invalid");  
+        } 
+        else if (pointname.length > 300) {
+            document.getElementById("errorEditName").innerHTML = "Nazwa punktu nie może przekraczać 300 znaków.";
+            isValid = false;
+            $("#editPointName").addClass("form-control custom-width is-invalid");
+        }
+        else {
+            $("#editPointName").addClass("is-valid");
+        }
+
+        return isValid;
+    }
+</script>
+
+<script>
+    function setEditModalData(pointId, pointName, pointDescription, pointPhotoUrl) {
+        document.getElementById('editPointId').value = pointId;
+        document.getElementById('editPointName').value = pointName;
+        document.getElementById('editPointDescription').value = pointDescription;
+
+        // Przypisanie ścieżki zdjęcia do ukrytego pola
+        document.getElementById('hiddenPhotoUrl').value = pointPhotoUrl;
+
+        // Wyświetlanie aktualnej ścieżki zdjęcia, jeśli istnieje
+        if (pointPhotoUrl) {
+            document.getElementById('currentPhotoLabel').innerText = "Aktualne zdjęcie: " + pointPhotoUrl;
+            document.getElementById('currentPhotoContainer').style.display = "block";
+        } else {
+            document.getElementById('currentPhotoContainer').style.display = "none";
+        }
+
+        // Wyczyść pole wyboru pliku
+        document.getElementById('editPointPhotoUrl').value = "";
+        document.getElementById('deletePhotoCheckbox').checked = false;
+    }
+</script>
+
+<div class="modal fade" id="taskModalEdit" tabindex="-1" aria-labelledby="taskModalEditLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalEditLabel">Edycja punktu do zadania</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("EditPoint", "Task", FormMethod.Post, new { onsubmit = "return validateFormEdit();", enctype = "multipart/form-data" }))
+                {
+                    @Html.Hidden("taskId", Model.Id)
+                    @Html.Hidden("PointId", "", new { id = "editPointId" })
+
+                    <div class="input-group mb-3 has-validation">
+                        <span class="input-group-text">Nazwa:</span>
+                        @Html.TextBox("Point.Name", null, new
+                            {
+                                @class = "form-control custom-width",
+                                @id = "editPointName",
+                                @maxlength = "300"
+                            })
+                        <div class="invalid-feedback d-block">
+                            <span id="errorEditName" style="color:red;"></span>
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Opis:</span>
+                        @Html.TextArea("Point.Description", null, new
+                            {
+                                @class = "form-control custom-width",
+                                @rows = "4",
+                                @cols = "50",
+                                @id = "editPointDescription"
+                            })
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Zdjęcie (opcjonalne):</span>
+                        <input type="file" name="Photo" class="form-control" id="editPointPhotoUrl" />
+                    </div>
+
+                    <div id="currentPhotoContainer" class="mb-3" style="display: none;">
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="deletePhotoCheckbox" />
+                            <label class="form-check-label" for="deletePhotoCheckbox">Usuń obecne zdjęcie</label>
+                            <input type="hidden" name="DeletePhoto" id="hiddenDeletePhoto" value="false" />
+                            <script>
+                                document.getElementById('deletePhotoCheckbox').addEventListener('change', function () {
+                                    document.getElementById('hiddenDeletePhoto').value = this.checked ? "true" : "false";
+                                });
+                            </script>
+                        </div>
+                        <span id="currentPhotoLabel" class="text-muted"></span>
+                    </div>
+
+                    <input type="hidden" name="Point.PhotoUrl" id="hiddenPhotoUrl" />
+                    <input type="submit" value="Zapisz" class="btn btn-primary" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDeleteModalData(pointId, pointName) {
+        document.getElementById('deletePointId').value = pointId;
+        document.getElementById('deletePointName').textContent = pointName;
+    }
+</script>
+
+<div class="modal fade" id="deleteConfirm" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmLabel">Potwierdzenie usunięcia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Czy na pewno chcesz usunąć podzadanie
+                    <strong id="deletePointName" class="text-wrap"></strong>?
+                </p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("DeletePoint", "Task", FormMethod.Post, new { @class = "d-inline-block" }))
+                {
+                    @Html.Hidden("taskId", Model.Id)
+                    <input type="hidden" id="deletePointId" name="pointId" />
+                    <button type="submit" class="btn btn-danger">Usuń</button>
+                }
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Anuluj</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #deletePointName {
+        word-wrap: break-word; /* Wymusza zawijanie słów, jeśli są zbyt długie */
+        overflow-wrap: anywhere; /* Zapewnia zawijanie nawet bez spacji */
+        white-space: normal; /* Pozwala na zawijanie tekstu w linii */
+    }
+</style>
+
+<script>
+    function setDeleteTriggerModalData(triggerPointId, triggerPointName) {
+        document.getElementById('deleteTriggerPointId').value = triggerPointId;
+        document.getElementById('deleteTriggerPointName').textContent = triggerPointName;
+    }
+</script>
+
+<div class="modal fade" id="deleteConfirmTrigger" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmLabel">Potwierdzenie usunięcia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                <p>Czy na pewno chcesz usunąć wyzwalacz do zadania <strong id="deleteTriggerPointName"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("RemoveTrigger", "Task", FormMethod.Post))
+                {
+                    @Html.Hidden("taskId", Model.Id)
+                    <input type="hidden" id="deleteTriggerPointId" name="triggerId" />
+                    <button type="submit" class="btn btn-danger">Usuń</button>
+                }
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Anuluj</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .table .actions-column {
+        min-width: 300px; /* Dostosuj wartość według potrzeb */
+        white-space: nowrap; /* Zapobiega zawijaniu wierszy */
+    }
+
+    .table td, .table th {
+        white-space: nowrap; /* Zapobiega zawijaniu w każdej komórce tabeli */
+    }
+</style>
+<h3>@Model.Name </h3>
+<br />
+
+@if (Model.Description != null && Model.Description.Length > 0)
+{
+    @Model.Description
+    <br />
+    <br />
+}
+
+<hr style="border-top: 4px solid #000000;">
+
+<h5>Wyzwalacze:</h5><br />
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#triggerModal">
+    Dodaj wyzwalacz
+</button>
+
+
+<table class="table table-striped table-hover text-wrap">
+    <thead>
+        <tr>
+            <th class="text-wrap" style="width: 20%;">Nazwa</th>
+            <th class="text-wrap" style="width: 10%;">Typ</th>
+            <th class="text-wrap" style="width: 15%;">Podtyp</th>
+            <th class="text-wrap" style="width: 40%;">Opis</th>
+            <th class="text-wrap" style="width: 15%;">Usuwanie</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trigger in @Model.Triggers)
+        {
+            <tr>
+                <td class="text-wrap" title="@trigger.Name">@trigger.Name</td>
+                <td class="text-wrap" title="@trigger.Type.GetEnumDescription()">@trigger.Type.GetEnumDescription()</td>
+                <td class="text-wrap" title="@trigger.SubType">@trigger.SubType</td>
+                <td class="text-wrap" title="@trigger.Description">@trigger.Description</td>
+                <td class="text-wrap">
+                    <button type="button" class="btn btn-danger btn-sm me-1" data-bs-toggle="modal"
+                            data-bs-target="#deleteConfirmTrigger"
+                            onclick="setDeleteTriggerModalData('@trigger.Id', '@trigger.Name')">
+                        Usuń
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr style="border-top: 4px solid #000000;">
+<h5>Punkty:</h5>
+<br />
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#taskModal">
+    Dodaj punkt
+</button>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th class="text-wrap" style="width: 15%;">Zdjęcie</th>
+            <th class="text-wrap" style="width: 25%;">Nazwa punktu</th>
+            <th class="text-wrap" style="width: 40%;">Wyzwalacze</th>
+            <th class="text-wrap" style="width: 20%;">Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var point in @Model.Points)
+    {
+        <tr>
+             
+            @if (!string.IsNullOrEmpty(point.PhotoUrl))
+            {
+                 <td class ="text-wrap">
+                        <img src="@point.PhotoUrl" alt="Zdjęcie punktu" class="img-fluid rounded" style="max-width: 100px; max-height: 100px;" />
+                 </td>
+            }
+            else
+            {
+                 <td class="text-wrap text-muted">Brak zdjęcia</td>
+            }
+            <td class="text-wrap">@point.Name</td>
+            <td class="text-wrap">
+                 <div class="d-flex flex-wrap gap-1">
+                    @foreach (var trigger in point.Triggers)
+                    {
+                        <span class="badge bg-warning text-dark" style="max-width: 150px;">@trigger</span>
+                    }
+                </div>
+            </td>
+            <td class="text-wrap actions-column">
+                @using (Html.BeginForm("Details", "Point", FormMethod.Post, new { @class = "d-inline-block" }))
+                {
+                    @Html.Hidden("pointId", point.Id)
+                    <input type="submit" value="Szczegóły" class="btn btn-primary btn-sm me-1" />
+                }
+                @using (Html.BeginForm("UpPoint", "Task", FormMethod.Post, new { @class = "d-inline-block" }))
+                {
+                    @Html.Hidden("taskId", Model.Id)
+                    @Html.Hidden("pointId", point.Id)
+                    <button type="submit" class="btn btn-primary btn-sm me-1">
+                        <img src="~/arrow_up.png" alt="Ikona" style="width:20px;height:20px;">
+                    </button>
+                }
+                @using (Html.BeginForm("DownPoint", "Task", FormMethod.Post, new { @class = "d-inline-block" }))
+                {
+                    @Html.Hidden("taskId", Model.Id)
+                    @Html.Hidden("pointId", point.Id)
+                    <button type="submit" class="btn btn-primary btn-sm me-1">
+                        <img src="~/arrow_down.png" alt="Ikona" style="width:20px;height:20px;">
+                    </button>
+                }
+                    <button type="button" class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#taskModalEdit"
+                            onclick="setEditModalData('@point.Id', '@point.Name', '@point.Description', '@point.PhotoUrl')">
+                        Edytuj
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm me-1" data-bs-toggle="modal"
+                            data-bs-target="#deleteConfirm"
+                            onclick="setDeleteModalData('@point.Id', '@point.Name')">
+                        Usuń
+                    </button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

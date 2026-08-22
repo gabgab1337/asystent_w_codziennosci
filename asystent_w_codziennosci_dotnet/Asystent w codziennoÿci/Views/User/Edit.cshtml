@@ -1,0 +1,41 @@
+﻿@using AsystentView.Common
+
+@model AssistantLogic.ViewModel.UserEditVM
+@{
+    ViewData["Title"] = "Edycja użytkownika";
+    var htmlAttributes = Model.CanEditType
+                    ? new Dictionary<string, object> { { "class", "form-control custom-width" } }
+                    : new Dictionary<string, object> { { "class", "form-control custom-width" }, { "disabled", "disabled" } };
+}
+
+@using (Html.BeginForm("Update", "User", FormMethod.Post, new { @class = "needs-validation" }))
+{
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.UsernameBefore)
+    <div class="input-group mb-3 has-validation">
+        <span class="input-group-text">Login:</span>
+        @Html.TextBoxFor(m => m.Username, new
+            {
+                @class = "form-control custom-width "
+                + Validation.GetValidationClass(ViewData.ModelState, "Username")
+            })
+        <div class="invalid-feedback d-block">
+            @ViewData.ModelState["Username"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </div>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Typ użytkownika:</span>
+        @if(Model.actualType == AssistantDatabase.Model.UserType.administrator)
+        {
+            @Html.DropDownListFor(x => x.Type, Model.Types, htmlAttributes)
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.Type)
+            <span class="input-group-text">Osoba z ASD</span>
+        }
+    </div>
+    <br />
+    <input type="submit" value="Zapisz" class="btn btn-primary" />
+    @Html.ActionLink("Anuluj", "Index", "User", null, new { @class = "btn btn-info" })
+}

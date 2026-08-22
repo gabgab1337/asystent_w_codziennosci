@@ -1,0 +1,48 @@
+body, html {
+    background-color: var(--bs-myColor-100);
+}
+
+
+nav.navbar {
+    background-color: var(--bs-myColor-700) !important; 
+    color: var(--bs-myColor-000) !important; 
+}
+
+    nav.navbar .navbar-brand,
+    nav.navbar .nav-link {
+        color: var(--bs-myColor-000) !important; 
+    }
+
+    nav.navbar .navbar-toggler-icon {
+        background-color: var(--bs-myColor-500) !important; 
+    }
+
+.input-group-text {
+    background-color: var(--bs-myColor-500) !important; 
+    color: #ffffff !important; 
+    border-color: var(--bs-myColor-800) !important; 
+}
+
+.btn.btn-danger {
+    background-color: var(--bs-myColor-700) !important;
+    border-color: var(--bs-myColor-700) !important;
+    color: white !important; 
+}
+
+.btn.btn-primary {
+    background-color: var(--bs-myColor-600) !important;
+    border-color: var(--bs-myColor-600) !important;
+    color: white !important; /* Kolor tekstu */
+}
+
+.btn.btn-success {
+    background-color: var(--bs-myColor-500) !important;
+    border-color: var(--bs-myColor-500) !important;
+    color: white !important; /* Kolor tekstu */
+}
+
+.btn.btn-info {
+    background-color: var(--bs-myColor-400) !important;
+    border-color: var(--bs-myColor-400) !important;
+    color: white !important; /* Kolor tekstu */
+}
