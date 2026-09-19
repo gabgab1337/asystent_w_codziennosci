@@ -12,3 +12,22 @@ F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug
 F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.pdb
 F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.genruntimeconfig.cache
 F:\Asystent w Codzienności\Asystent w codziennoÿci70\AsystenDatabase\obj\Debug\net8.0\ref\AssistantDatabase.dll
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\bin\Debug\net8.0\AssistantDatabase.deps.json
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\bin\Debug\net8.0\AssistantDatabase.runtimeconfig.json
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\bin\Debug\net8.0\AssistantDatabase.dll
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\bin\Debug\net8.0\AssistantDatabase.pdb
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.csproj.AssemblyReference.cache
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.GeneratedMSBuildEditorConfig.editorconfig
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.AssemblyInfoInputs.cache
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.AssemblyInfo.cs
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.csproj.CoreCompileInputs.cache
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.sourcelink.json
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.dll
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\refint\AssistantDatabase.dll
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.pdb
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\AssistantDatabase.genruntimeconfig.cache
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AsystenDatabase\obj\Debug\net8.0\ref\AssistantDatabase.dll
+C:\Users\depes\AppData\Local\Temp\assistant-api-verify\AssistantDatabase.deps.json
+C:\Users\depes\AppData\Local\Temp\assistant-api-verify\AssistantDatabase.runtimeconfig.json
+C:\Users\depes\AppData\Local\Temp\assistant-api-verify\AssistantDatabase.dll
+C:\Users\depes\AppData\Local\Temp\assistant-api-verify\AssistantDatabase.pdb

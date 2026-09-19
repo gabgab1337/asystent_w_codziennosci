@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AsystentView")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+37395d7a7b9ca4ca1e2543c71c9029b12ddf24ad")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f24492872e2828216df847c93161de2ea76df96")]
 [assembly: System.Reflection.AssemblyProductAttribute("AsystentView")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AsystentView")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

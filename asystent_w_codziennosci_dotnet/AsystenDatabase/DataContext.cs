@@ -10,29 +10,6 @@ namespace AssistantDatabase
 
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            //string sqlServerName = "localhost\\SQLEXPRESS";
-            string sqlServerName = "DESKTOP-H0MGPLN";
-            string dataBaseName = "Assistant";
-
-            //optionsBuilder.UseSqlServer($"Server={sqlServerName};Database={dataBaseName};Trusted_Connection=true;TrustServerCertificate=true;");
-
-            RemoteConnection(optionsBuilder);
-        }
-
-        private void RemoteConnection(DbContextOptionsBuilder optionsBuilder)
-        {
-            string dataBaseName = "2309_Assistant";
-            string sqlServerName = "mssql01.dcsweb.pl,51433";
-            string user = "2309_admin";
-            
-            string password = "Bpj|FU25i38T,J5_K9%8";
-
-            optionsBuilder.UseSqlServer($"Server={sqlServerName};Database={dataBaseName};User Id={user};Password={password};TrustServerCertificate=true;");
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TaskDM>()

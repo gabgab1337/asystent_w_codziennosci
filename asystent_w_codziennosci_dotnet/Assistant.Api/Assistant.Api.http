@@ -1,0 +1,53 @@
+@Assistant.Api_HostAddress = https://localhost:7180
+
+GET {{Assistant.Api_HostAddress}}/health
+Accept: application/json
+
+###
+
+# Replace with an account that already logs into the MVC site.
+POST {{Assistant.Api_HostAddress}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "YOUR_USER",
+  "password": "YOUR_PASSWORD"
+}
+
+###
+
+# Expected: 401 with { "error": "Błędne dane logowania" }
+POST {{Assistant.Api_HostAddress}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "YOUR_USER",
+  "password": "wrong-password"
+}
+
+###
+
+@token = PASTE_ACCESS_TOKEN_HERE
+
+GET {{Assistant.Api_HostAddress}}/api/v1/me
+Authorization: Bearer {{token}}
+
+###
+
+# ASD person token only.
+GET {{Assistant.Api_HostAddress}}/api/v1/me/plan
+Authorization: Bearer {{token}}
+
+###
+
+# Caregiver token only, and the protege must belong to that caregiver.
+GET {{Assistant.Api_HostAddress}}/api/v1/proteges/1/plan
+Authorization: Bearer {{token}}
+
+###
+
+# Expected: 403 with { "error": "Podopieczny nie należy do tego opiekuna" }
+GET {{Assistant.Api_HostAddress}}/api/v1/proteges/999999/plan
+Authorization: Bearer {{token}}
+
+###

@@ -2554,11 +2554,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Asystent w Codzienności\\Asystent w codziennoÿci70\\AssistantLogic\\AssistantLogic.csproj",
+      "projectUniqueName": "F:\\AsystentWCodziennosci\\asystent_w_codziennosci_dotnet\\AssistantLogic\\AssistantLogic.csproj",
       "projectName": "AssistantLogic",
-      "projectPath": "F:\\Asystent w Codzienności\\Asystent w codziennoÿci70\\AssistantLogic\\AssistantLogic.csproj",
+      "projectPath": "F:\\AsystentWCodziennosci\\asystent_w_codziennosci_dotnet\\AssistantLogic\\AssistantLogic.csproj",
       "packagesPath": "C:\\Users\\depes\\.nuget\\packages\\",
-      "outputPath": "F:\\Asystent w Codzienności\\Asystent w codziennoÿci70\\AssistantLogic\\obj\\",
+      "outputPath": "F:\\AsystentWCodziennosci\\asystent_w_codziennosci_dotnet\\AssistantLogic\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2578,10 +2578,11 @@
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {
-            "F:\\Asystent w Codzienności\\Asystent w codziennoÿci70\\AsystenDatabase\\AssistantDatabase.csproj": {
-              "projectPath": "F:\\Asystent w Codzienności\\Asystent w codziennoÿci70\\AsystenDatabase\\AssistantDatabase.csproj"
+            "F:\\AsystentWCodziennosci\\asystent_w_codziennosci_dotnet\\AsystenDatabase\\AssistantDatabase.csproj": {
+              "projectPath": "F:\\AsystentWCodziennosci\\asystent_w_codziennosci_dotnet\\AsystenDatabase\\AssistantDatabase.csproj"
             }
           }
         }
@@ -2600,6 +2601,7 @@
     },
     "frameworks": {
       "net8.0": {
+        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "Newtonsoft.Json": {

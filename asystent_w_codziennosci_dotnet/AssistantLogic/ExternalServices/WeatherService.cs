@@ -1,6 +1,7 @@
 ﻿using AssistantLogic.Model;
 using AssistantLogic.Triggers.Weather;
 using AssistantLogic.IExternalServices;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace AssistantLogic.Services
@@ -8,10 +9,18 @@ namespace AssistantLogic.Services
     public class WeatherService : IWeatherService
     {
         private static readonly HttpClient client = new HttpClient();
-        public WeatherService() { }
+        private readonly string _apiKey;
+
+        public WeatherService(IConfiguration configuration)
+        {
+            _apiKey = configuration["WeatherApi:ApiKey"]
+                ?? throw new InvalidOperationException("Missing \"WeatherApi:ApiKey\" configuration.");
+        }
+
         public async Task<WeatherModel?> GetCurrentWeather()
         {
-            var response = await client.GetStringAsync("http://api.openweathermap.org/data/2.5/weather?q=Opole&appid=1f38869134c58999034783193cd89a1d");
+            var response = await client.GetStringAsync(
+                $"http://api.openweathermap.org/data/2.5/weather?q=Opole&appid={_apiKey}");
 
             JObject json = JObject.Parse(response);
             if(json == null)

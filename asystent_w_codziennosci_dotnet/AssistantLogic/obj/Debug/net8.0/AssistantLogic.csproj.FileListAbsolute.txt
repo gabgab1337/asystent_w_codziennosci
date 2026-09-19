@@ -13,3 +13,22 @@ F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\
 F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\refint\AssistantLogic.dll
 F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\AssistantLogic.pdb
 F:\Asystent w Codzienności\Asystent w codziennoÿci70\AssistantLogic\obj\Debug\net8.0\ref\AssistantLogic.dll
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\bin\Debug\net8.0\AssistantLogic.deps.json
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\bin\Debug\net8.0\AssistantLogic.dll
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\bin\Debug\net8.0\AssistantLogic.pdb
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\bin\Debug\net8.0\AssistantDatabase.dll
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\bin\Debug\net8.0\AssistantDatabase.pdb
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\AssistantLogic.csproj.AssemblyReference.cache
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\AssistantLogic.GeneratedMSBuildEditorConfig.editorconfig
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\AssistantLogic.AssemblyInfoInputs.cache
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\AssistantLogic.AssemblyInfo.cs
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\AssistantLogic.csproj.CoreCompileInputs.cache
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\AssistantLogic.sourcelink.json
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\Assistan.EB3D71BD.Up2Date
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\AssistantLogic.dll
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\refint\AssistantLogic.dll
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\AssistantLogic.pdb
+F:\AsystentWCodziennosci\asystent_w_codziennosci_dotnet\AssistantLogic\obj\Debug\net8.0\ref\AssistantLogic.dll
+C:\Users\depes\AppData\Local\Temp\assistant-api-verify\AssistantLogic.deps.json
+C:\Users\depes\AppData\Local\Temp\assistant-api-verify\AssistantLogic.dll
+C:\Users\depes\AppData\Local\Temp\assistant-api-verify\AssistantLogic.pdb
