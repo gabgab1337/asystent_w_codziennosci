@@ -1,0 +1,125 @@
+## Personal files
+API-MIGRATION-PLAN.md
+API-VERTICAL-SLICE.md
+
+## .NET / Visual Studio
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+artifacts/
+TestResults/
+[Bb]uild[Ll]og.*
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# MSBuild / compiler leftovers
+*.pdb
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.ipdb
+*.pch
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.tlog
+*.cache
+!*.[Cc]ache/
+
+# Visual Studio
+.vs/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.slnLaunch.user
+.localhistory/
+.vshistory/
+
+# ReSharper / Rider
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+.idea/
+*.sln.iml
+
+# VS Code / Cursor (keep shared settings if added later)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+.cursor/
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Publish / ClickOnce
+publish/
+*.[Pp]ublish.xml
+*.azurePubxml
+*.pubxml
+*.publishproj
+*.publishsettings
+PublishScripts/
+
+# ASP.NET user secrets and local config
+secrets.json
+appsettings.*.local.json
+*.local.json
+.env
+.env.*
+!.env.example
+
+# SQL Server / local databases
+*.mdf
+*.ldf
+*.ndf
+*.db
+*.db-shm
+*.db-wal
+*.dbmdl
+*.jfm
+
+# User-uploaded photos (MVC wwwroot)
+**/wwwroot/uploads/*
+!**/wwwroot/uploads/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Misc
+*~
+~$*
+*.pfx
+HealthChecksDB
+MigrationBackup/
+_UpgradeReport_Files/
+UpgradeLog*.XML
+UpgradeLog*.htm
