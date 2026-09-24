@@ -1,5 +1,6 @@
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
+using Assistant.Api.Middleware;
 using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
 using AssistantLogic.IInternalServices;
@@ -41,6 +42,7 @@ namespace Assistant.Api.Controllers.v1
         [Authorize(Roles = Roles.AsdPerson)]
         [ProducesResponseType(typeof(PlanDayResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ExceptionHandleMiddleware), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
         public ActionResult<PlanDayResponse> GetMyPlan()
         {
@@ -72,6 +74,7 @@ namespace Assistant.Api.Controllers.v1
         [ProducesResponseType(typeof(PlanDayResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ExceptionHandleMiddleware), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
         public ActionResult<PlanDayResponse> GetProtegePlan(int protegeId)
         {

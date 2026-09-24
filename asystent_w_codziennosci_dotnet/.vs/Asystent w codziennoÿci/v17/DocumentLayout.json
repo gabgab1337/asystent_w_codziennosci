@@ -1,0 +1,139 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|c:\\users\\v\\documents\\github\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\assistant.api\\middleware\\exceptionhandlemiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|solutionrelative:assistant.api\\middleware\\exceptionhandlemiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|c:\\users\\v\\documents\\github\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\assistant.api\\controllers\\v1\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|solutionrelative:assistant.api\\controllers\\v1\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|c:\\users\\v\\documents\\github\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\assistant.api\\contracts\\errorresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|solutionrelative:assistant.api\\contracts\\errorresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|c:\\users\\v\\documents\\github\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\assistant.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|solutionrelative:assistant.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|c:\\users\\v\\documents\\github\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\assistant.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|solutionrelative:assistant.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|c:\\users\\v\\documents\\github\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\assistant.api\\controllers\\v1\\plancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|solutionrelative:assistant.api\\controllers\\v1\\plancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|c:\\users\\v\\documents\\github\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\assistant.api\\controllers\\v1\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{279712B8-3E80-468F-A3EF-515AA6597B3D}|Assistant.Api\\Assistant.Api.csproj|solutionrelative:assistant.api\\controllers\\v1\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ErrorResponse.cs",
+              "DocumentMoniker": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Contracts\\ErrorResponse.cs",
+              "RelativeDocumentMoniker": "Assistant.Api\\Contracts\\ErrorResponse.cs",
+              "ToolTip": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Contracts\\ErrorResponse.cs",
+              "RelativeToolTip": "Assistant.Api\\Contracts\\ErrorResponse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-21T09:48:34.387Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\appsettings.json",
+              "RelativeDocumentMoniker": "Assistant.Api\\appsettings.json",
+              "ToolTip": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\appsettings.json",
+              "RelativeToolTip": "Assistant.Api\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-21T09:45:56.536Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Program.cs",
+              "RelativeDocumentMoniker": "Assistant.Api\\Program.cs",
+              "ToolTip": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Program.cs",
+              "RelativeToolTip": "Assistant.Api\\Program.cs",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAAAG0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-21T09:32:49.216Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Controllers\\v1\\AuthController.cs",
+              "RelativeDocumentMoniker": "Assistant.Api\\Controllers\\v1\\AuthController.cs",
+              "ToolTip": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Controllers\\v1\\AuthController.cs",
+              "RelativeToolTip": "Assistant.Api\\Controllers\\v1\\AuthController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAACQAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-21T09:01:17.034Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PlanController.cs",
+              "DocumentMoniker": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Controllers\\v1\\PlanController.cs",
+              "RelativeDocumentMoniker": "Assistant.Api\\Controllers\\v1\\PlanController.cs",
+              "ToolTip": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Controllers\\v1\\PlanController.cs",
+              "RelativeToolTip": "Assistant.Api\\Controllers\\v1\\PlanController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAEwAAABrAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-21T09:01:15.937Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Controllers\\v1\\UserController.cs",
+              "RelativeDocumentMoniker": "Assistant.Api\\Controllers\\v1\\UserController.cs",
+              "ToolTip": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Controllers\\v1\\UserController.cs",
+              "RelativeToolTip": "Assistant.Api\\Controllers\\v1\\UserController.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAowD8AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-21T09:01:11.81Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ExceptionHandleMiddleware.cs",
+              "DocumentMoniker": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Middleware\\ExceptionHandleMiddleware.cs",
+              "RelativeDocumentMoniker": "Assistant.Api\\Middleware\\ExceptionHandleMiddleware.cs",
+              "ToolTip": "C:\\Users\\V\\Documents\\GitHub\\asystent_w_codziennosci\\asystent_w_codziennosci_dotnet\\Assistant.Api\\Middleware\\ExceptionHandleMiddleware.cs",
+              "RelativeToolTip": "Assistant.Api\\Middleware\\ExceptionHandleMiddleware.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwB0AAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-21T09:00:49.991Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
