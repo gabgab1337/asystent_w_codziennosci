@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Assistant.Api",
+    "\\Assistant.Api\\Authentication",
+    "\\Assistant.Api\\Middleware",
+    "\\AssistantLogic",
+    "\\Asystent w codziennoÿci",
+    "\\Asystent w codziennoÿci\\Controllers"
+  ],
+  "SelectedNode": "\\Assistant.Api\\Authentication\\Roles.cs",
+  "PreviewInSolutionExplorer": false
+}

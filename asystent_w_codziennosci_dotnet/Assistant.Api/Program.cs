@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Assistant.Api.Authentication;
+using Assistant.Api.Middleware;
 using AssistantDatabase;
 using AssistantDatabase.IRepositories;
 using AssistantDatabase.Repositories;
@@ -107,7 +108,7 @@ builder.Services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-
+app.UseMiddleware<ExceptionHandleMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
