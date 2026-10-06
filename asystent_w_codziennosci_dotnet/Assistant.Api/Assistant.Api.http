@@ -51,3 +51,32 @@ GET {{Assistant.Api_HostAddress}}/api/v1/proteges/999999/plan
 Authorization: Bearer {{token}}
 
 ###
+
+# Caregiver token only. Lists ASD users linked to this caregiver.
+GET {{Assistant.Api_HostAddress}}/api/v1/proteges
+Authorization: Bearer {{token}}
+
+###
+
+# Caregiver token only. Password is hashed by UserRepository.Add.
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "new-protege",
+  "password": "secret"
+}
+
+###
+
+# Caregiver token only. protegeId must belong to this caregiver.
+PUT {{Assistant.Api_HostAddress}}/api/v1/me/selected-protege
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "protegeId": 1
+}
+
+###

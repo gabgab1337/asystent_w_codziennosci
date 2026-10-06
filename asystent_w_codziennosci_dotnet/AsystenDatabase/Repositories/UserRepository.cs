@@ -16,7 +16,10 @@ namespace AssistantDatabase.Repositories
 
         public void Add(UserDM user)
         {
-            user.Password = HashPassword(user.Username);
+            // MVC create leaves Password empty, so those accounts keep logging in with the
+            // username hash. A caller that supplies a password (the API) is hashed the same way.
+            string secret = string.IsNullOrEmpty(user.Password) ? user.Username : user.Password;
+            user.Password = HashPassword(secret);
             user.JoiningDate = DateTime.Now;
             context.Users.Add(user);
             context.SaveChanges();
