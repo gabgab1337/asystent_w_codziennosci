@@ -1,6 +1,5 @@
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
-using Assistant.Api.Middleware;
 using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +27,7 @@ namespace Assistant.Api.Controllers.v1
         [HttpGet]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ExceptionHandleMiddleware), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public ActionResult<UserDto> Get()
         {
             int? userId = User.GetUserId();
@@ -57,12 +56,6 @@ namespace Assistant.Api.Controllers.v1
             }
 
             return Ok(UserDto.FromEntity(user, selectedProtegeId, selectedProtegeName));
-        }
-
-        [HttpGet("throw-test")]
-        public IActionResult ThrowTest()
-        {
-            throw new InvalidOperationException("Test middleware wyjątków");
         }
     }
 }

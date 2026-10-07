@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AsystentView")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2e27d5e6ba1d14a0af494e855b28efc3d529768e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf1925918f39d2ce989a8a5dadd78d6b9d77b10c")]
 [assembly: System.Reflection.AssemblyProductAttribute("AsystentView")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AsystentView")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

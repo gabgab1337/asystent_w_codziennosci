@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Assistant.Api.Contracts
 {
     public class ErrorResponse
@@ -12,5 +14,8 @@ namespace Assistant.Api.Contracts
         }
 
         public string Error { get; set; } = string.Empty;
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? Code { get; set; }
     }
 }

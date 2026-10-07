@@ -108,7 +108,7 @@ builder.Services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-app.UseMiddleware<ExceptionHandleMiddleware>();
+app.UseExceptionHandling();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

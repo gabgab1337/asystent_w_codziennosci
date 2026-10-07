@@ -1,6 +1,7 @@
 using Assistant.Api.Contracts;
 using AssistantLogic.IInternalServices;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -9,37 +10,51 @@ namespace Assistant.Api.Middleware
     public class ExceptionHandleMiddleware
     {
         private readonly RequestDelegate _next;
-        // Tworzymy jako singleton (¿yje ca³y czas)
-        // IErrorService u¿ywa bazy danych. Prawdopodobnie jest zarejestrowany jako Scoped (¿yje tylko podczas jednego requesta)
-        // Jak wstrzykn¹æ servis typu Scoped do naszego Middleware?
+        private readonly ILogger<ExceptionHandleMiddleware> _logger;
+        // Tworzymy jako singleton (Å¼yje caÅ‚y czas)
+        // IErrorService uÅ¼ywa bazy danych. Prawdopodobnie jest zarejestrowany jako Scoped (Å¼yje tylko podczas jednego requesta)
+        // Jak wstrzyknÄ…Ä‡ servis typu Scoped do naszego Middleware?
         // NIE ROBIMY TEGO W KONSTRUKTORZE!
 
-        public ExceptionHandleMiddleware(RequestDelegate next)
+        public ExceptionHandleMiddleware(RequestDelegate next, ILogger<ExceptionHandleMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context, IErrorService errorService)
         {
-            try
-            {
-                await _next(context);
+            try 
+            { 
+                await _next(context); 
             }
             catch (Exception ex)
             {
-                errorService.LogError(ex.ToString());
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                context.Response.ContentType = "application/problem+json";
-                await context.Response.WriteAsJsonAsync(new ErrorResponse("Wyst¹pi³ nieoczekiwany b³¹d serwera."));
+                _logger.LogError(ex, "NieobsÅ‚uÅ¼ony wyjÄ…tek");
+                try
+                {
+                    errorService.LogError(ex.ToString());
+                }
+                catch (Exception dbEx)
+                {
+                    _logger.LogError(dbEx, "NieobsÅ‚uÅ¼ony wyjÄ…tek");
+                }
+                if (!context.Response.HasStarted)
+                {
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    await context.Response.WriteAsJsonAsync(
+                        new ErrorResponse("WystÄ…piÅ‚ nieoczekiwany bÅ‚Ä…d serwera.") { Code = "unexpected" },
+                        options: null,
+                        contentType: "application/problem+json");
+                }
             }
         }
 
     }
 
-    // Helper ¿eby by³o czyœciej w Program.cs
     public static class ExceptionHandlingMiddlewareExtensions
     {
-        public static IApplicationBuilder UseExceprionHandling(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseExceptionHandling(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<ExceptionHandleMiddleware>();
         }

@@ -1,6 +1,5 @@
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
-using Assistant.Api.Middleware;
 using AssistantLogic.IInternalServices;
 using AssistantLogic.Model;
 using AssistantLogic.ViewModel;
@@ -28,7 +27,7 @@ namespace Assistant.Api.Controllers.v1
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ExceptionHandleMiddleware), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public ActionResult<LoginResponse> LogIn(LoginRequest request)
         {
             UserSessionModel? user = userService.LogIn(new UserLoginVM
