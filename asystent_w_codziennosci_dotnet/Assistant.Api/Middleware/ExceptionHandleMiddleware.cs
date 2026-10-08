@@ -11,10 +11,6 @@ namespace Assistant.Api.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandleMiddleware> _logger;
-        // Tworzymy jako singleton (żyje cały czas)
-        // IErrorService używa bazy danych. Prawdopodobnie jest zarejestrowany jako Scoped (żyje tylko podczas jednego requesta)
-        // Jak wstrzyknąć servis typu Scoped do naszego Middleware?
-        // NIE ROBIMY TEGO W KONSTRUKTORZE!
 
         public ExceptionHandleMiddleware(RequestDelegate next, ILogger<ExceptionHandleMiddleware> logger)
         {
