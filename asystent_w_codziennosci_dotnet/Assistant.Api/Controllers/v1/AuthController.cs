@@ -27,6 +27,7 @@ namespace Assistant.Api.Controllers.v1
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public ActionResult<LoginResponse> LogIn(LoginRequest request)
         {
             UserSessionModel? user = userService.LogIn(new UserLoginVM

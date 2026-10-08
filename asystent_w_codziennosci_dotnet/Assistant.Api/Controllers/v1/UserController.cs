@@ -28,6 +28,7 @@ namespace Assistant.Api.Controllers.v1
         [HttpGet]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public ActionResult<UserDto> Get()
         {
             int? userId = User.GetUserId();

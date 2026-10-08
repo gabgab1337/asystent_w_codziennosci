@@ -41,6 +41,7 @@ namespace Assistant.Api.Controllers.v1
         [Authorize(Roles = Roles.AsdPerson)]
         [ProducesResponseType(typeof(PlanDayResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
         public ActionResult<PlanDayResponse> GetMyPlan()
         {
@@ -72,6 +73,7 @@ namespace Assistant.Api.Controllers.v1
         [ProducesResponseType(typeof(PlanDayResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
         public ActionResult<PlanDayResponse> GetProtegePlan(int protegeId)
         {
