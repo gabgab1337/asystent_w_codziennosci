@@ -10,6 +10,13 @@ namespace AssistantDatabase.IRepositories
         UserDM GetProtegeById(int? id);
         UserType GetUserType(int userId);
         void Update(UserDM user);
+
+        /// <summary>
+        /// Replaces <paramref name="user"/>.Password with the SHA-256 hash <see cref="Add"/> stores.
+        /// Does not save; persist with <see cref="Update"/>.
+        /// </summary>
+        void AssignHashedPassword(UserDM user, string password);
+
         void DeleteAsdPerson(UserDM asd);
         bool ExistLogin(string username);
         bool DeleteCaregiver(UserDM caregiver);

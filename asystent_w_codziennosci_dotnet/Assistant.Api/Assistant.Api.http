@@ -80,3 +80,36 @@ Content-Type: application/json
 }
 
 ###
+
+# Caregiver token only. Username is required; omit password to keep the current one.
+# Expected when the id is missing or belongs to someone else: 403
+# { "error": "Podopieczny nie należy do tego opiekuna" }
+PUT {{Assistant.Api_HostAddress}}/api/v1/proteges/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "renamed-protege",
+  "password": "new-secret"
+}
+
+###
+
+# Caregiver token only. Deletes the protege (and their tasks).
+# If this id is the caregiver's SelectedASD, that column is cleared first.
+DELETE {{Assistant.Api_HostAddress}}/api/v1/proteges/1
+Authorization: Bearer {{token}}
+
+###
+
+# Any authenticated user. Palette names match the MVC picker:
+# White, Blue, Green, Yellow, Red, Cyan, Gray, Indigo, Orange, Pink, Purple, Teal.
+PUT {{Assistant.Api_HostAddress}}/api/v1/me/settings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "colorPalette": "Blue"
+}
+
+###

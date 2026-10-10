@@ -43,20 +43,34 @@ namespace Assistant.Api.Controllers.v1
                 return Unauthorized(new ErrorResponse(UNKNOWN_USER));
             }
 
-            int? selectedProtegeId = null;
-            string? selectedProtegeName = null;
+            return Ok(ToDto(user));
+        }
 
-            if (user.Type == UserType.caregiver && user.SelectedASD.HasValue)
+        /// <summary>
+        /// Stores the palette name the MVC <c>SelectColor</c> action used to write on
+        /// <see cref="UserDM.ColorsPalete"/>.
+        /// </summary>
+        [HttpPut("settings")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        public ActionResult<UserDto> UpdateSettings(UpdateSettingsRequest request)
+        {
+            int? userId = User.GetUserId();
+            if (userId == null)
             {
-                UserDM? protege = userRepository.GetProtegeById(user.SelectedASD);
-                if (protege != null)
-                {
-                    selectedProtegeId = protege.Id;
-                    selectedProtegeName = protege.Username;
-                }
+                return Unauthorized(new ErrorResponse(UNKNOWN_USER));
             }
 
-            return Ok(UserDto.FromEntity(user, selectedProtegeId, selectedProtegeName));
+            UserDM? user = userRepository.GetById(userId.Value);
+            if (user == null)
+            {
+                return Unauthorized(new ErrorResponse(UNKNOWN_USER));
+            }
+
+            userRepository.SetColorsPalete(user.Id, request.ColorPalette);
+
+            return Ok(ToDto(user));
         }
 
         [HttpPut("selected-protege")]
@@ -96,6 +110,28 @@ namespace Assistant.Api.Controllers.v1
             userRepository.Update(caregiver);
 
             return Ok(UserDto.FromEntity(caregiver, protege.Id, protege.Username));
+        }
+
+        /// <summary>
+        /// Same protege resolution as <see cref="Get"/>: a selected protege that no longer exists
+        /// is reported as none.
+        /// </summary>
+        private UserDto ToDto(UserDM user)
+        {
+            int? selectedProtegeId = null;
+            string? selectedProtegeName = null;
+
+            if (user.Type == UserType.caregiver && user.SelectedASD.HasValue)
+            {
+                UserDM? protege = userRepository.GetProtegeById(user.SelectedASD);
+                if (protege != null)
+                {
+                    selectedProtegeId = protege.Id;
+                    selectedProtegeName = protege.Username;
+                }
+            }
+
+            return UserDto.FromEntity(user, selectedProtegeId, selectedProtegeName);
         }
     }
 }

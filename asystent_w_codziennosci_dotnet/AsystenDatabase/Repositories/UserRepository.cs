@@ -48,6 +48,13 @@ namespace AssistantDatabase.Repositories
             context.Users.Update(user);
             context.SaveChanges();
         }
+
+        public void AssignHashedPassword(UserDM user, string password)
+        {
+            // Update writes Password as-is. A new secret has to be hashed here, or the next
+            // login comparison (which hashes the attempt) will never match.
+            user.Password = HashPassword(password);
+        }
         public List<UserDM> ReadAllUsers()
         {
             return context.Users.ToList();
