@@ -113,3 +113,74 @@ Content-Type: application/json
 }
 
 ###
+
+# Caregiver token only. Every item has kind "time" or "weather".
+GET {{Assistant.Api_HostAddress}}/api/v1/triggers
+Authorization: Bearer {{token}}
+
+###
+
+GET {{Assistant.Api_HostAddress}}/api/v1/triggers/1
+Authorization: Bearer {{token}}
+
+###
+
+# Time subtypes: date, dateRange, weekDay, dateInterval, workingDay, weekend.
+POST {{Assistant.Api_HostAddress}}/api/v1/triggers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "kind": "time",
+  "name": "Poniedziałki",
+  "time": {
+    "subtype": "weekDay",
+    "weekDay": "monday"
+  }
+}
+
+###
+
+# Weather subtypes: default, rain, snow.
+POST {{Assistant.Api_HostAddress}}/api/v1/triggers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "kind": "weather",
+  "name": "Lekki lub umiarkowany deszcz",
+  "weather": {
+    "subtype": "rain",
+    "minTemperature": 0,
+    "maxTemperature": 20,
+    "minRain": "lightRain",
+    "maxRain": "moderateRain",
+    "minWind": "calm",
+    "maxWind": "freshBreeze"
+  }
+}
+
+###
+
+# The kind may change during an update. This example creates a two-day interval.
+PUT {{Assistant.Api_HostAddress}}/api/v1/triggers/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "kind": "time",
+  "name": "Co dwa dni",
+  "time": {
+    "subtype": "dateInterval",
+    "startDate": "2026-10-10",
+    "interval": "everyTwoDays"
+  }
+}
+
+###
+
+# Returns 400 with code "trigger_in_use" when linked to a task or point.
+DELETE {{Assistant.Api_HostAddress}}/api/v1/triggers/1
+Authorization: Bearer {{token}}
+
+###
