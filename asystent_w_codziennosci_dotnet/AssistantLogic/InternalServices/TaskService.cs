@@ -60,9 +60,9 @@ namespace AssistantLogic.InternalServices
             return task;
         }
 
-        public void Add(TaskAddEditVM viewModel, int caregiverId, int asdPersonID)
+        public TaskDM Add(TaskAddEditVM viewModel, int caregiverId, int asdPersonID)
         {
-            taskRepository.Add(ToTaskDM(viewModel), caregiverId, asdPersonID);
+            return taskRepository.Add(ToTaskDM(viewModel), caregiverId, asdPersonID);
         }
 
         public void Update(TaskAddEditVM model)
@@ -102,6 +102,7 @@ namespace AssistantLogic.InternalServices
             if (weekDay == null || weekDay.Value == TriggerWeekDayType.None)
             {
                 taskRepository.Down(asdPersonId, taskId);
+                return;
             }
 
             List<TaskDM> listDM = ReadAllForAsdPersonAndWeekDay(asdPersonId, weekDay);

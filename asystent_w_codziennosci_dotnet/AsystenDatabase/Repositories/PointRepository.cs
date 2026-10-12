@@ -34,7 +34,7 @@ namespace AssistantDatabase.Repositories
                .OrderBy(x => x.Number).ToList();
         }
 
-        public void Add(TaskPointDM point)
+        public TaskPointDM Add(TaskPointDM point)
         {
             int? maxNumber = context.Points
                         .Where(p => p.TaskId == point.TaskId)
@@ -52,6 +52,7 @@ namespace AssistantDatabase.Repositories
 
             context.Points.Add(point);
             context.SaveChanges();
+            return point;
         }
         public void Update(TaskPointDM point)
         {
@@ -133,6 +134,15 @@ namespace AssistantDatabase.Repositories
 
         public void AddTrigger(int pointId, int triggerId, bool negation)
         {
+            TriggerPointDM? existing = context.TriggerPoints
+                .SingleOrDefault(link => link.TriggerId == triggerId && link.PointId == pointId);
+            if (existing != null)
+            {
+                existing.Negation = negation;
+                context.SaveChanges();
+                return;
+            }
+
             TaskPointDM point = context.Points.Find(pointId);
             TriggerDM trigger = context.Trigers.Find(triggerId);
             var triggerPoint = new TriggerPointDM

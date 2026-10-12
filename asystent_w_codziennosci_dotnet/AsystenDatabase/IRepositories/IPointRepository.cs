@@ -8,7 +8,7 @@ namespace AssistantDatabase.IRepositories
         List<TaskPointDM> ReadAllForTask(int taskId);
         List<TaskPointDM> ReadAllDonePointsForTask(int taskId);
         List<TaskPointDM> ReadAllToDoPointsForTask(int taskId);
-        void Add(TaskPointDM point);
+        TaskPointDM Add(TaskPointDM point);
         void Update(TaskPointDM point);
         void Up(int taskId, int pointId);
         void Down(int taskId, int pointId);

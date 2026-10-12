@@ -1,5 +1,6 @@
 ﻿using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssistantDatabase.Repositories
 {
@@ -12,7 +13,7 @@ namespace AssistantDatabase.Repositories
             this.context = context;
         }
 
-        public void Add(TaskDM task, int caregiverId, int asdPersonID)
+        public TaskDM Add(TaskDM task, int caregiverId, int asdPersonID)
         {
             task.AsdPerson = context.Users.Find(asdPersonID);
             task.Caregiver = context.Users.Find(caregiverId);
@@ -33,6 +34,7 @@ namespace AssistantDatabase.Repositories
 
             context.Tasks.Add(task);
             context.SaveChanges();
+            return task;
         }
 
         public TaskDM GetById(int id)
@@ -53,7 +55,11 @@ namespace AssistantDatabase.Repositories
 
         public List<TaskDM> ReadAllForCaregiver(int caregiverId)
         {
-            return context.Tasks.Where(t => t.Caregiver.Id == caregiverId).OrderBy(x => x.Number).ToList();
+            return context.Tasks
+                .Include(task => task.AsdPerson)
+                .Where(task => task.Caregiver.Id == caregiverId)
+                .OrderBy(task => task.Number)
+                .ToList();
         }
 
         public List<TaskDM> ReadAllForAsdPerson(int asdPersonId)
@@ -90,6 +96,15 @@ namespace AssistantDatabase.Repositories
 
         public void AddTrigger(int taskId, int triggerId, bool negation)
         {
+            TriggerTaskDM? existing = context.TriggerTasks
+                .SingleOrDefault(link => link.TriggerId == triggerId && link.TaskId == taskId);
+            if (existing != null)
+            {
+                existing.Negation = negation;
+                context.SaveChanges();
+                return;
+            }
+
             TaskDM task = context.Tasks.Find(taskId);
             TriggerDM trigger = context.Trigers.Find(triggerId);
             var triggerTask = new TriggerTaskDM

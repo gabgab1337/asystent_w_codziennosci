@@ -4,7 +4,7 @@ namespace AssistantDatabase.IRepositories
 {
     public interface ITaskRepository
     {
-        void Add(TaskDM task, int caregiverId, int adsPersonID);
+        TaskDM Add(TaskDM task, int caregiverId, int adsPersonID);
 
         TaskDM GetById(int id);
         TaskDM? GetByIdWithDetails(int id);

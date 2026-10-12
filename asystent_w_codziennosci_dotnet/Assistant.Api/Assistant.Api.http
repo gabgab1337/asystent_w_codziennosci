@@ -184,3 +184,138 @@ DELETE {{Assistant.Api_HostAddress}}/api/v1/triggers/1
 Authorization: Bearer {{token}}
 
 ###
+
+@protegeId = 1
+@taskId = 1
+@pointId = 1
+@triggerId = 1
+
+# Caregiver token only. Omit weekDay to list the full task order.
+GET {{Assistant.Api_HostAddress}}/api/v1/proteges/{{protegeId}}/tasks?weekDay=monday
+Authorization: Bearer {{token}}
+
+###
+
+# A missing timeBegin/timeEnd means that the corresponding anchor is disabled.
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges/{{protegeId}}/tasks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Śniadanie",
+  "description": "Przygotuj śniadanie",
+  "durationMinutes": 30,
+  "timeBegin": "07:30",
+  "timeEnd": "08:00"
+}
+
+###
+
+GET {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+
+###
+
+PUT {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Śniadanie",
+  "description": "Zaktualizowany opis",
+  "durationMinutes": 25,
+  "timeBegin": "07:30",
+  "timeEnd": null
+}
+
+###
+
+POST {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}/move
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "direction": "up",
+  "weekDay": "monday"
+}
+
+###
+
+PUT {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}/triggers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "triggerId": {{triggerId}},
+  "negation": false
+}
+
+###
+
+DELETE {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}/triggers/{{triggerId}}
+Authorization: Bearer {{token}}
+
+###
+
+POST {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}/points
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Umyj ręce",
+  "description": "Użyj mydła i ciepłej wody"
+}
+
+###
+
+GET {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}
+Authorization: Bearer {{token}}
+
+###
+
+PUT {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Dokładnie umyj ręce",
+  "description": "Myj ręce przez 30 sekund"
+}
+
+###
+
+POST {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/move
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "direction": "down"
+}
+
+###
+
+PUT {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/triggers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "triggerId": {{triggerId}},
+  "negation": true
+}
+
+###
+
+DELETE {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/triggers/{{triggerId}}
+Authorization: Bearer {{token}}
+
+###
+
+DELETE {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}
+Authorization: Bearer {{token}}
+
+###
+
+DELETE {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+
+###
