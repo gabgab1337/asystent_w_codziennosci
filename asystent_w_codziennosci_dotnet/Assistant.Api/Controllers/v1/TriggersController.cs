@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
 using Assistant.Api.Mapping;
@@ -24,19 +25,21 @@ namespace Assistant.Api.Controllers.v1
 
         private readonly ITriggerRepository triggerRepository;
         private readonly IUserRepository userRepository;
+        private readonly ILogger<TriggersController> logger;
 
         public TriggersController(
             ITriggerRepository triggerRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ILogger<TriggersController> logger)
         {
             this.triggerRepository = triggerRepository;
             this.userRepository = userRepository;
+            this.logger = logger;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(List<TriggerDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status501NotImplemented)]
         public ActionResult<List<TriggerDto>> Get()
         {
             UserDM? caregiver = FindCaller();
@@ -45,15 +48,16 @@ namespace Assistant.Api.Controllers.v1
                 return Unauthorized(new ErrorResponse(UNKNOWN_USER));
             }
 
-            List<TriggerDM> triggers = triggerRepository.ReadAllForCaregiver(caregiver.Id);
-            if (triggers.Any(IsUnsupported))
+            List<TriggerDto> triggers = new();
+            foreach (TriggerDM trigger in triggerRepository.ReadAllForCaregiver(caregiver.Id))
             {
-                return StatusCode(
-                    StatusCodes.Status501NotImplemented,
-                    new ErrorResponse(UNSUPPORTED_TRIGGER) { Code = "unsupported_trigger" });
+                if (TryMapTrigger(trigger, out TriggerDto? dto))
+                {
+                    triggers.Add(dto);
+                }
             }
 
-            return Ok(triggers.Select(TriggerMapper.ToDto).ToList());
+            return Ok(triggers);
         }
 
         [HttpGet("{id:int}")]
@@ -185,6 +189,39 @@ namespace Assistant.Api.Controllers.v1
 
             UserDM? caregiver = userRepository.GetById(caregiverId.Value);
             return caregiver?.Type == UserType.caregiver ? caregiver : null;
+        }
+
+        /// <summary>
+        /// Maps one stored trigger. A legacy row with an unsupported type or unreadable
+        /// <c>Data</c> is logged and left out of the list so the other rows still return.
+        /// </summary>
+        private bool TryMapTrigger(TriggerDM trigger, [NotNullWhen(true)] out TriggerDto? dto)
+        {
+            try
+            {
+                dto = TriggerMapper.ToDto(trigger);
+                return true;
+            }
+            catch (Exception exception) when (IsUnreadableLegacyTrigger(exception))
+            {
+                logger.LogWarning(
+                    exception,
+                    "Skipping trigger {TriggerId} because its stored data cannot be mapped.",
+                    trigger.Id);
+                dto = null;
+                return false;
+            }
+        }
+
+        private static bool IsUnreadableLegacyTrigger(Exception exception)
+        {
+            return exception is NotSupportedException
+                or FormatException
+                or InvalidOperationException
+                or ArgumentException
+                or OverflowException
+                or IndexOutOfRangeException
+                or NullReferenceException;
         }
 
         private static bool IsUnsupported(TriggerDM trigger)

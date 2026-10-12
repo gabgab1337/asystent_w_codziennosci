@@ -13,6 +13,9 @@ namespace AssistantDatabase.IRepositories
         List<TriggerDM> ReadAllForTask(int taskId);
         List<TriggerDM> ReadAllForTaskToAdd(int taskId, int caregiverId);
         List<TriggerDM> ReadAllForPoint(int pointId);
+        Task<List<TriggerDM>> ReadAllForPointAsync(
+            int pointId,
+            CancellationToken cancellationToken = default);
         List<TriggerDM> ReadAllForPointToAdd(int pointId, int caregiverId);
     }
 }

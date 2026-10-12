@@ -34,6 +34,14 @@ namespace AssistantDatabase.Repositories
         {
             return context.Users.Find(id);
         }
+
+        public async Task<UserDM?> GetByIdAsync(
+            int id,
+            CancellationToken cancellationToken = default)
+        {
+            return await context.Users.FindAsync(new object[] { id }, cancellationToken);
+        }
+
         public UserDM GetProtegeById(int? id)
         {
             return context.Users.Find(id);

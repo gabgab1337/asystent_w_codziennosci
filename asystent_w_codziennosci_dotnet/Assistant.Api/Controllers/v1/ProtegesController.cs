@@ -1,5 +1,6 @@
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
+using Assistant.Api.Storage;
 using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +21,17 @@ namespace Assistant.Api.Controllers.v1
         private const string NOT_YOUR_PROTEGE = "Podopieczny nie należy do tego opiekuna";
 
         private readonly IUserRepository userRepository;
+        private readonly IPointRepository pointRepository;
+        private readonly IWebHostEnvironment environment;
 
-        public ProtegesController(IUserRepository userRepository)
+        public ProtegesController(
+            IUserRepository userRepository,
+            IPointRepository pointRepository,
+            IWebHostEnvironment environment)
         {
             this.userRepository = userRepository;
+            this.pointRepository = pointRepository;
+            this.environment = environment;
         }
 
         [HttpGet]
@@ -120,7 +128,7 @@ namespace Assistant.Api.Controllers.v1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
             UserDM? caregiver = FindCaller();
             if (caregiver == null)
@@ -134,6 +142,16 @@ namespace Assistant.Api.Controllers.v1
                 return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse(NOT_YOUR_PROTEGE));
             }
 
+            // The person delete cascades tasks and points in SQL and does not touch disk.
+            // Remove photos first so a failed delete never commits that cascade.
+            List<string> photoPaths = await pointRepository.ReadPhotoPathsForAsdPersonAsync(
+                protege!.Id,
+                cancellationToken);
+            foreach (string photoPath in photoPaths)
+            {
+                PhotoPaths.DeleteStoredPhoto(environment, photoPath);
+            }
+
             // Same order as UserService.Delete: drop the selection before the row goes away,
             // so the caregiver is not left pointing at a removed user.
             if (caregiver.SelectedASD != null && caregiver.SelectedASD == id)
@@ -142,7 +160,7 @@ namespace Assistant.Api.Controllers.v1
                 userRepository.Update(caregiver);
             }
 
-            userRepository.DeleteAsdPerson(protege!);
+            userRepository.DeleteAsdPerson(protege);
             return NoContent();
         }
 

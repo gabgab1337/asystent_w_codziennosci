@@ -1,4 +1,5 @@
 using Assistant.Api.Contracts;
+using Assistant.Api.Storage;
 using AssistantDatabase.Model;
 using AssistantLogic.ViewModel;
 
@@ -51,7 +52,8 @@ namespace Assistant.Api.Mapping
                 TaskId = point.TaskId,
                 Name = point.Name,
                 Description = point.Description,
-                Number = point.Number
+                Number = point.Number,
+                PhotoUrl = PhotoPaths.ToDownloadPath(point.PhotoUrl)
             };
         }
 
@@ -66,6 +68,7 @@ namespace Assistant.Api.Mapping
                 Name = point.Name,
                 Description = point.Description,
                 Number = point.Number,
+                PhotoUrl = PhotoPaths.ToDownloadPath(point.PhotoUrl),
                 Triggers = triggers.Select(ToAttachedTriggerDto).ToList()
             };
         }

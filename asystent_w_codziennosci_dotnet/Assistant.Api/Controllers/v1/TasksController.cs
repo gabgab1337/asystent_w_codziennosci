@@ -1,6 +1,7 @@
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
 using Assistant.Api.Mapping;
+using Assistant.Api.Storage;
 using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
 using AssistantLogic.IInternalServices;
@@ -25,19 +26,22 @@ namespace Assistant.Api.Controllers.v1
         private readonly IPointRepository pointRepository;
         private readonly ITriggerRepository triggerRepository;
         private readonly IUserRepository userRepository;
+        private readonly IWebHostEnvironment environment;
 
         public TasksController(
             ITaskService taskService,
             ITaskRepository taskRepository,
             IPointRepository pointRepository,
             ITriggerRepository triggerRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IWebHostEnvironment environment)
         {
             this.taskService = taskService;
             this.taskRepository = taskRepository;
             this.pointRepository = pointRepository;
             this.triggerRepository = triggerRepository;
             this.userRepository = userRepository;
+            this.environment = environment;
         }
 
         [HttpGet("proteges/{protegeId:int}/tasks")]
@@ -155,20 +159,34 @@ namespace Assistant.Api.Controllers.v1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(
+            int id,
+            CancellationToken cancellationToken)
         {
-            UserDM? caregiver = FindCaller();
+            UserDM? caregiver = await FindCallerAsync(cancellationToken);
             if (caregiver == null)
             {
                 return Unauthorized(new ErrorResponse(UNKNOWN_USER));
             }
 
-            if (FindOwnedTask(id, caregiver.Id) == null)
+            TaskDM? task = await taskRepository.GetOwnedByCaregiverAsync(
+                id,
+                caregiver.Id,
+                cancellationToken);
+            if (task == null)
             {
                 return Forbidden(NOT_YOUR_TASK, "task_not_owned");
             }
 
-            taskService.Delete(id);
+            List<string> photoPaths = await pointRepository.ReadPhotoPathsForTaskAsync(
+                task.Id,
+                cancellationToken);
+            foreach (string photoPath in photoPaths)
+            {
+                PhotoPaths.DeleteStoredPhoto(environment, photoPath);
+            }
+
+            await taskRepository.DeleteAsync(task, cancellationToken);
             return NoContent();
         }
 
@@ -297,6 +315,20 @@ namespace Assistant.Api.Controllers.v1
             }
 
             UserDM? caregiver = userRepository.GetById(caregiverId.Value);
+            return caregiver?.Type == UserType.caregiver ? caregiver : null;
+        }
+
+        private async Task<UserDM?> FindCallerAsync(CancellationToken cancellationToken)
+        {
+            int? caregiverId = User.GetUserId();
+            if (caregiverId == null)
+            {
+                return null;
+            }
+
+            UserDM? caregiver = await userRepository.GetByIdAsync(
+                caregiverId.Value,
+                cancellationToken);
             return caregiver?.Type == UserType.caregiver ? caregiver : null;
         }
 

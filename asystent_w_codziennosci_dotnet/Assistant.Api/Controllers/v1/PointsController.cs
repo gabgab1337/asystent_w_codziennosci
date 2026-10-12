@@ -1,6 +1,7 @@
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
 using Assistant.Api.Mapping;
+using Assistant.Api.Storage;
 using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
 using AssistantLogic.IInternalServices;
@@ -18,25 +19,31 @@ namespace Assistant.Api.Controllers.v1
         private const string NOT_YOUR_TASK = "Zadanie nie należy do podopiecznego tego opiekuna";
         private const string NOT_YOUR_POINT = "Punkt nie należy do podopiecznego tego opiekuna";
         private const string NOT_YOUR_TRIGGER = "Wyzwalacz nie należy do tego opiekuna";
+        private const string INVALID_PHOTO =
+            "Plik musi być obrazem JPEG, PNG, GIF lub WebP o rozmiarze do 10 MB";
+        private const long MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 
         private readonly IPointService pointService;
         private readonly IPointRepository pointRepository;
         private readonly ITaskRepository taskRepository;
         private readonly ITriggerRepository triggerRepository;
         private readonly IUserRepository userRepository;
+        private readonly IWebHostEnvironment environment;
 
         public PointsController(
             IPointService pointService,
             IPointRepository pointRepository,
             ITaskRepository taskRepository,
             ITriggerRepository triggerRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IWebHostEnvironment environment)
         {
             this.pointService = pointService;
             this.pointRepository = pointRepository;
             this.taskRepository = taskRepository;
             this.triggerRepository = triggerRepository;
             this.userRepository = userRepository;
+            this.environment = environment;
         }
 
         [HttpPost("tasks/{taskId:int}/points")]
@@ -109,24 +116,164 @@ namespace Assistant.Api.Controllers.v1
             return Ok(BuildDetails(pointRepository.GetById(id)));
         }
 
-        [HttpDelete("points/{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPost("points/{id:int}/photo")]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(MAX_PHOTO_BYTES)]
+        [RequestFormLimits(MultipartBodyLengthLimit = MAX_PHOTO_BYTES)]
+        [ProducesResponseType(typeof(PointDetailsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<PointDetailsDto>> UploadPhoto(
+            int id,
+            [FromForm] IFormFile? photo,
+            CancellationToken cancellationToken)
         {
-            UserDM? caregiver = FindCaller();
+            UserDM? caregiver = await FindCallerAsync(cancellationToken);
             if (caregiver == null)
             {
                 return Unauthorized(new ErrorResponse(UNKNOWN_USER));
             }
 
-            if (FindOwnedPoint(id, caregiver.Id) == null)
+            TaskPointDM? point = await pointRepository.GetOwnedByCaregiverAsync(
+                id,
+                caregiver.Id,
+                cancellationToken);
+            if (point == null)
             {
                 return Forbidden(NOT_YOUR_POINT, "point_not_owned");
             }
 
-            pointService.Delete(id);
+            string extension = Path.GetExtension(photo?.FileName ?? string.Empty).ToLowerInvariant();
+            if (photo == null
+                || photo.Length == 0
+                || photo.Length > MAX_PHOTO_BYTES
+                || !PhotoPaths.HasAllowedExtension(photo.FileName)
+                || !photo.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase)
+                || !await HasValidImageSignature(photo, extension, cancellationToken))
+            {
+                return BadRequest(new ErrorResponse(INVALID_PHOTO) { Code = "invalid_photo" });
+            }
+
+            string uploadsRoot = PhotoPaths.GetUploadsRoot(environment);
+            Directory.CreateDirectory(uploadsRoot);
+
+            string fileName = $"{Guid.NewGuid():N}{extension}";
+            string physicalPath = Path.Combine(uploadsRoot, fileName);
+            try
+            {
+                await using var stream = new FileStream(
+                    physicalPath,
+                    FileMode.CreateNew,
+                    FileAccess.Write,
+                    FileShare.None,
+                    81920,
+                    useAsync: true);
+                await photo.CopyToAsync(stream, cancellationToken);
+            }
+            catch
+            {
+                System.IO.File.Delete(physicalPath);
+                throw;
+            }
+
+            string? previousPhotoPath = point.PhotoUrl;
+            point.PhotoUrl = PhotoPaths.ToStoredPath(fileName);
+            bool databaseUpdated = false;
+            try
+            {
+                await pointRepository.UpdateAsync(point, cancellationToken);
+                databaseUpdated = true;
+                PhotoPaths.DeleteStoredPhoto(environment, previousPhotoPath);
+            }
+            catch
+            {
+                point.PhotoUrl = previousPhotoPath;
+                try
+                {
+                    if (databaseUpdated)
+                    {
+                        await pointRepository.UpdateAsync(point, CancellationToken.None);
+                    }
+                }
+                finally
+                {
+                    System.IO.File.Delete(physicalPath);
+                }
+
+                throw;
+            }
+
+            return Ok(await BuildDetailsAsync(point, cancellationToken));
+        }
+
+        [HttpDelete("points/{id:int}/photo")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> DeletePhoto(
+            int id,
+            CancellationToken cancellationToken)
+        {
+            UserDM? caregiver = await FindCallerAsync(cancellationToken);
+            if (caregiver == null)
+            {
+                return Unauthorized(new ErrorResponse(UNKNOWN_USER));
+            }
+
+            TaskPointDM? point = await pointRepository.GetOwnedByCaregiverAsync(
+                id,
+                caregiver.Id,
+                cancellationToken);
+            if (point == null)
+            {
+                return Forbidden(NOT_YOUR_POINT, "point_not_owned");
+            }
+
+            string? previousPhotoPath = point.PhotoUrl;
+            point.PhotoUrl = null;
+            await pointRepository.UpdateAsync(point, cancellationToken);
+
+            try
+            {
+                PhotoPaths.DeleteStoredPhoto(environment, previousPhotoPath);
+            }
+            catch
+            {
+                point.PhotoUrl = previousPhotoPath;
+                await pointRepository.UpdateAsync(point, CancellationToken.None);
+                throw;
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("points/{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Delete(
+            int id,
+            CancellationToken cancellationToken)
+        {
+            UserDM? caregiver = await FindCallerAsync(cancellationToken);
+            if (caregiver == null)
+            {
+                return Unauthorized(new ErrorResponse(UNKNOWN_USER));
+            }
+
+            TaskPointDM? point = await pointRepository.GetOwnedByCaregiverAsync(
+                id,
+                caregiver.Id,
+                cancellationToken);
+            if (point == null)
+            {
+                return Forbidden(NOT_YOUR_POINT, "point_not_owned");
+            }
+
+            string? photoPath = point.PhotoUrl;
+            PhotoPaths.DeleteStoredPhoto(environment, photoPath);
+            await pointRepository.DeleteAsync(point, cancellationToken);
             return NoContent();
         }
 
@@ -215,11 +362,74 @@ namespace Assistant.Api.Controllers.v1
             return NoContent();
         }
 
+        private static async Task<bool> HasValidImageSignature(
+            IFormFile photo,
+            string extension,
+            CancellationToken cancellationToken)
+        {
+            byte[] header = new byte[12];
+            await using Stream stream = photo.OpenReadStream();
+            int bytesRead = 0;
+            while (bytesRead < header.Length)
+            {
+                int count = await stream.ReadAsync(
+                    header.AsMemory(bytesRead, header.Length - bytesRead),
+                    cancellationToken);
+                if (count == 0)
+                {
+                    break;
+                }
+
+                bytesRead += count;
+            }
+
+            return HasValidImageSignature(header, bytesRead, extension);
+        }
+
+        private static bool HasValidImageSignature(
+            byte[] header,
+            int bytesRead,
+            string extension)
+        {
+            ReadOnlySpan<byte> bytes = header.AsSpan(0, bytesRead);
+
+            return extension switch
+            {
+                ".jpg" or ".jpeg" =>
+                    bytesRead >= 3
+                    && bytes[0] == 0xFF
+                    && bytes[1] == 0xD8
+                    && bytes[2] == 0xFF,
+                ".png" =>
+                    bytesRead >= 8
+                    && bytes[..8].SequenceEqual(
+                        new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }),
+                ".gif" =>
+                    bytesRead >= 6
+                    && (bytes[..6].SequenceEqual("GIF87a"u8)
+                        || bytes[..6].SequenceEqual("GIF89a"u8)),
+                ".webp" =>
+                    bytesRead >= 12
+                    && bytes[..4].SequenceEqual("RIFF"u8)
+                    && bytes.Slice(8, 4).SequenceEqual("WEBP"u8),
+                _ => false
+            };
+        }
+
         private PointDetailsDto BuildDetails(TaskPointDM point)
         {
             return CaregiverAuthoringMapper.ToPointDetailsDto(
                 point,
                 triggerRepository.ReadAllForPoint(point.Id));
+        }
+
+        private async Task<PointDetailsDto> BuildDetailsAsync(
+            TaskPointDM point,
+            CancellationToken cancellationToken)
+        {
+            return CaregiverAuthoringMapper.ToPointDetailsDto(
+                point,
+                await triggerRepository.ReadAllForPointAsync(point.Id, cancellationToken));
         }
 
         private TaskPointDM? FindOwnedPoint(int pointId, int caregiverId)
@@ -249,6 +459,20 @@ namespace Assistant.Api.Controllers.v1
             }
 
             UserDM? caregiver = userRepository.GetById(caregiverId.Value);
+            return caregiver?.Type == UserType.caregiver ? caregiver : null;
+        }
+
+        private async Task<UserDM?> FindCallerAsync(CancellationToken cancellationToken)
+        {
+            int? caregiverId = User.GetUserId();
+            if (caregiverId == null)
+            {
+                return null;
+            }
+
+            UserDM? caregiver = await userRepository.GetByIdAsync(
+                caregiverId.Value,
+                cancellationToken);
             return caregiver?.Type == UserType.caregiver ? caregiver : null;
         }
 

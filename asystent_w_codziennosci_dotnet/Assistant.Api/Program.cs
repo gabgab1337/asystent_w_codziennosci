@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
 using Assistant.Api.Middleware;
+using Assistant.Api.Storage;
 using AssistantDatabase;
 using AssistantDatabase.IRepositories;
 using AssistantDatabase.Repositories;
@@ -142,6 +143,8 @@ builder.Services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+Directory.CreateDirectory(PhotoPaths.GetUploadsRoot(app.Environment));
+
 app.UseExceptionHandling();
 if (app.Environment.IsDevelopment())
 {
@@ -157,6 +160,8 @@ else
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Deliberately do not enable UseStaticFiles: photos under wwwroot/uploads must only be
+// reachable through the authenticated FilesController.
 app.MapControllers();
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));

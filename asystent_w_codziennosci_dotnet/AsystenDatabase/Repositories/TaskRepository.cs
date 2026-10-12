@@ -47,6 +47,20 @@ namespace AssistantDatabase.Repositories
             return context.Tasks.Find(id);
         }
 
+        public Task<TaskDM?> GetOwnedByCaregiverAsync(
+            int taskId,
+            int caregiverId,
+            CancellationToken cancellationToken = default)
+        {
+            return context.Tasks.SingleOrDefaultAsync(
+                task =>
+                    task.Id == taskId
+                    && task.Caregiver.Id == caregiverId
+                    && task.AsdPerson.Type == UserType.asdPerson
+                    && task.AsdPerson.CaregiverId == caregiverId,
+                cancellationToken);
+        }
+
         public void Update(TaskDM task)
         {
             context.Tasks.Update(task);
@@ -137,6 +151,14 @@ namespace AssistantDatabase.Repositories
                 context.Tasks.Remove(task);
                 context.SaveChanges();
             }
+        }
+
+        public async Task DeleteAsync(
+            TaskDM task,
+            CancellationToken cancellationToken = default)
+        {
+            context.Tasks.Remove(task);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         public void Up(int asdPersonId, int taskId)

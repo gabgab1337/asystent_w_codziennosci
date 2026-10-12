@@ -284,6 +284,33 @@ Content-Type: application/json
 
 ###
 
+# Caregiver token only. Replace the local path with an actual JPEG, PNG, GIF, or WebP file.
+# The response includes photoUrl, for example /api/v1/files/0123456789abcdef.jpg.
+POST {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/photo
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=PointPhotoBoundary
+
+--PointPhotoBoundary
+Content-Disposition: form-data; name="photo"; filename="point-photo.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/point-photo.jpg
+--PointPhotoBoundary--
+
+###
+
+# Both caregiver and ASD-person tokens can read a photo through its authenticated URL.
+GET {{Assistant.Api_HostAddress}}/api/v1/files/PASTE_FILE_NAME_FROM_PHOTO_URL_HERE
+Authorization: Bearer {{token}}
+
+###
+
+# Caregiver token only. Removes both the database path and the physical file.
+DELETE {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/photo
+Authorization: Bearer {{token}}
+
+###
+
 POST {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/move
 Authorization: Bearer {{token}}
 Content-Type: application/json

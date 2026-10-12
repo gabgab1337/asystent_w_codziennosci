@@ -105,6 +105,8 @@ namespace Assistant.Api.Contracts
         public string? Description { get; set; }
 
         public int Number { get; set; }
+
+        public string? PhotoUrl { get; set; }
     }
 
     public sealed class PointDetailsDto
@@ -118,6 +120,8 @@ namespace Assistant.Api.Contracts
         public string? Description { get; set; }
 
         public int Number { get; set; }
+
+        public string? PhotoUrl { get; set; }
 
         public List<AttachedTriggerDto> Triggers { get; set; } = new();
     }

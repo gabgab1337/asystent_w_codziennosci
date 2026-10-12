@@ -7,6 +7,7 @@ namespace AssistantDatabase.IRepositories
         void Add(UserDM user);
         UserDM? IsLogIn(string userName, string password);
         UserDM GetById(int id);
+        Task<UserDM?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
         UserDM GetProtegeById(int? id);
         UserType GetUserType(int userId);
         void Update(UserDM user);
