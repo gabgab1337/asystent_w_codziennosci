@@ -36,7 +36,7 @@ namespace AsystentView
             builder.Services.AddTransient<ITimeService, TimeService>();
             builder.Services.AddTransient<IWeatherService, WeatherService>();
             builder.Services.AddTransient<IErrorService, ErrorService>();
-
+            builder.Services.AddMemoryCache();
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {

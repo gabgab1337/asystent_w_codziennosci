@@ -1,7 +1,11 @@
-﻿using AssistantLogic.Model;
+﻿using AssistantLogic.IExternalServices;
+using AssistantLogic.Model;
 using AssistantLogic.Triggers.Weather;
-using AssistantLogic.IExternalServices;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 
 namespace AssistantLogic.Services
@@ -10,26 +14,30 @@ namespace AssistantLogic.Services
     {
         private static readonly HttpClient client = new HttpClient();
         private readonly string _apiKey;
+        private IMemoryCache _cache;
+        private const string City = "Opole";
+        private const string WeatherCity = $"weather:{City}";
+        private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(60);
 
-        public WeatherService(IConfiguration configuration)
+        public WeatherService(IConfiguration configuration, IMemoryCache memoryCache)
         {
-            _apiKey = configuration["WeatherApi:ApiKey"]
-                ?? throw new InvalidOperationException("Missing \"WeatherApi:ApiKey\" configuration.");
+            _apiKey = configuration["WeatherApi:ApiKey"] ?? throw new InvalidOperationException("Missing \"WeatherApi:ApiKey\" configuration.");
+            _cache = memoryCache;
         }
 
         public async Task<WeatherModel?> GetCurrentWeather()
         {
-            var response = await client.GetStringAsync(
-                $"http://api.openweathermap.org/data/2.5/weather?q=Opole&appid={_apiKey}");
-
-            JObject json = JObject.Parse(response);
-            if(json == null)
+            if (_cache.TryGetValue(WeatherCity, out WeatherModel? cachedWeather))
             {
-                return null;
+                return cachedWeather;
             }
-          
-            return ConvertToModel(json);
-
+            var response = await client.GetStringAsync(
+                    $"http://api.openweathermap.org/data/2.5/weather?q={City}&appid={_apiKey}");
+            JObject json = JObject.Parse(response);
+            cachedWeather = ConvertToModel(json);
+            if (cachedWeather != null)
+                _cache.Set(WeatherCity, cachedWeather, CacheDuration);
+            return cachedWeather;
         }
 
         private WeatherModel? ConvertToModel(JObject json)

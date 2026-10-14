@@ -13,6 +13,7 @@ using AssistantLogic.InternalServices;
 using AssistantLogic.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -105,6 +106,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ITimeService, TimeService>();
 builder.Services.AddTransient<IWeatherService, WeatherService>();
 builder.Services.AddTransient<IErrorService, ErrorService>();
+builder.Services.AddMemoryCache();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 builder.Services.AddSingleton<IAccessTokenService, JwtAccessTokenService>();
