@@ -20,7 +20,7 @@ namespace AssistantLogic.Services
         public async Task<WeatherModel?> GetCurrentWeather()
         {
             var response = await client.GetStringAsync(
-                $"http://api.openweathermap.org/data/2.5/weather?q=Opole&appid={_apiKey}");
+                $"https://api.openweathermap.org/data/2.5/weather?q=Opole&appid={_apiKey}");
 
             JObject json = JObject.Parse(response);
             if(json == null)

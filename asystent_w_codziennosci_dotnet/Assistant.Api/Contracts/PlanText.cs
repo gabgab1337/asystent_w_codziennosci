@@ -1,10 +1,28 @@
+using System.Net;
+using System.Text.RegularExpressions;
+
 namespace Assistant.Api.Contracts
 {
     internal static class PlanText
     {
+        private static readonly Regex BreakTag = new(
+            @"<br\s*/?>",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static readonly Regex ParagraphClose = new(
+            @"</p\s*>",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static readonly Regex ParagraphOpen = new(
+            @"<p\b[^>]*>",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static readonly Regex AnyTag = new(@"<[^>]+>", RegexOptions.Compiled);
+
         /// <summary>
-        /// The plan services run descriptions through <c>ToHTML()</c>, which only turns newlines
-        /// into &lt;br&gt;. Clients render their own markup, so undo it and return plain text.
+        /// Plan generation runs descriptions through <c>ToHTML()</c>, and older rows may already
+        /// contain tags such as &lt;br&gt; or &lt;p&gt;. Clients render plain text, so turn those
+        /// breaks into newlines and drop every other tag. The database value is left unchanged.
         /// </summary>
         public static string? ToPlainText(string? text)
         {
@@ -13,7 +31,15 @@ namespace Assistant.Api.Contracts
                 return null;
             }
 
-            return text.Replace("<br>", "\n");
+            string plain = WebUtility.HtmlDecode(text);
+            plain = BreakTag.Replace(plain, "\n");
+            plain = ParagraphClose.Replace(plain, "\n");
+            plain = ParagraphOpen.Replace(plain, string.Empty);
+            plain = AnyTag.Replace(plain, string.Empty);
+            plain = plain.Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n');
+            plain = plain.Trim();
+
+            return plain.Length == 0 ? null : plain;
         }
     }
 }

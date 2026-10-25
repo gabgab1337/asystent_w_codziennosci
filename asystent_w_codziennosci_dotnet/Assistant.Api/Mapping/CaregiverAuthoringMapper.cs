@@ -13,7 +13,7 @@ namespace Assistant.Api.Mapping
             {
                 Id = task.Id,
                 Name = task.Name,
-                Description = task.Description,
+                Description = PlanText.ToPlainText(task.Description),
                 DurationMinutes = task.Time,
                 AnchorBegin = task.AnchorBegin,
                 TimeBegin = FormatTime(task.TimeBegin),
@@ -32,7 +32,7 @@ namespace Assistant.Api.Mapping
             {
                 Id = task.Id,
                 Name = task.Name,
-                Description = task.Description,
+                Description = PlanText.ToPlainText(task.Description),
                 DurationMinutes = task.Time,
                 AnchorBegin = task.AnchorBegin,
                 TimeBegin = FormatTime(task.TimeBegin),
@@ -51,7 +51,7 @@ namespace Assistant.Api.Mapping
                 Id = point.Id,
                 TaskId = point.TaskId,
                 Name = point.Name,
-                Description = point.Description,
+                Description = PlanText.ToPlainText(point.Description),
                 Number = point.Number,
                 PhotoUrl = PhotoPaths.ToDownloadPath(point.PhotoUrl)
             };
@@ -66,7 +66,7 @@ namespace Assistant.Api.Mapping
                 Id = point.Id,
                 TaskId = point.TaskId,
                 Name = point.Name,
-                Description = point.Description,
+                Description = PlanText.ToPlainText(point.Description),
                 Number = point.Number,
                 PhotoUrl = PhotoPaths.ToDownloadPath(point.PhotoUrl),
                 Triggers = triggers.Select(ToAttachedTriggerDto).ToList()

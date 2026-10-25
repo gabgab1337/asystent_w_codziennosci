@@ -34,21 +34,57 @@ Authorization: Bearer {{token}}
 
 ###
 
-# ASD person token only.
+# ASD person token only. Omits ?at=, so the plan is for the server clock.
 GET {{Assistant.Api_HostAddress}}/api/v1/me/plan
 Authorization: Bearer {{token}}
 
 ###
 
-# Caregiver token only, and the protege must belong to that caregiver.
-GET {{Assistant.Api_HostAddress}}/api/v1/proteges/1/plan
+# ASD person token. ?at= replaces DateTime.Now and preserves the supplied offset and time.
+GET {{Assistant.Api_HostAddress}}/api/v1/me/plan?at=2026-09-15T08:30:00%2B02:00
 Authorization: Bearer {{token}}
 
 ###
 
-# Expected: 403 with { "error": "Podopieczny nie należy do tego opiekuna" }
-GET {{Assistant.Api_HostAddress}}/api/v1/proteges/999999/plan
+# Caregiver and ASD-person tokens. Live OpenWeather reading for Opole.
+GET {{Assistant.Api_HostAddress}}/api/v1/weather/current
 Authorization: Bearer {{token}}
+
+###
+
+# Caregiver token only, and the protege must belong to that caregiver.
+# An empty object uses the server clock and the complete live forecast.
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges/1/plan
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Partial caregiver preview override. Every omitted weather field keeps its live value.
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges/1/plan
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "at": "2026-09-15T08:30:00+02:00",
+  "weather": {
+    "temperatureC": 12,
+    "weatherType": "rain",
+    "rainLevel": "lightRain",
+    "wind": "gentleBreeze"
+  }
+}
+
+###
+
+# Expected: 403 with { "error": "Podopieczny nie należy do tego opiekuna" }
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges/999999/plan
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
 
 ###
 
