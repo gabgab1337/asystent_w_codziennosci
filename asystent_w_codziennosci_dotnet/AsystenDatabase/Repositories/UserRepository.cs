@@ -16,7 +16,10 @@ namespace AssistantDatabase.Repositories
 
         public void Add(UserDM user)
         {
-            user.Password = HashPassword(user.Username);
+            // MVC create leaves Password empty, so those accounts keep logging in with the
+            // username hash. A caller that supplies a password (the API) is hashed the same way.
+            string secret = string.IsNullOrEmpty(user.Password) ? user.Username : user.Password;
+            user.Password = HashPassword(secret);
             user.JoiningDate = DateTime.Now;
             context.Users.Add(user);
             context.SaveChanges();
@@ -31,6 +34,14 @@ namespace AssistantDatabase.Repositories
         {
             return context.Users.Find(id);
         }
+
+        public async Task<UserDM?> GetByIdAsync(
+            int id,
+            CancellationToken cancellationToken = default)
+        {
+            return await context.Users.FindAsync(new object[] { id }, cancellationToken);
+        }
+
         public UserDM GetProtegeById(int? id)
         {
             return context.Users.Find(id);
@@ -44,6 +55,13 @@ namespace AssistantDatabase.Repositories
         {
             context.Users.Update(user);
             context.SaveChanges();
+        }
+
+        public void AssignHashedPassword(UserDM user, string password)
+        {
+            // Update writes Password as-is. A new secret has to be hashed here, or the next
+            // login comparison (which hashes the attempt) will never match.
+            user.Password = HashPassword(password);
         }
         public List<UserDM> ReadAllUsers()
         {

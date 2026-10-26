@@ -1,5 +1,6 @@
 ﻿using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssistantDatabase.Repositories
 {
@@ -93,6 +94,28 @@ namespace AssistantDatabase.Repositories
                 .ToList();
 
         }
+
+        public Task<List<TriggerDM>> ReadAllForPointAsync(
+            int pointId,
+            CancellationToken cancellationToken = default)
+        {
+            return context.TriggerPoints
+                .Where(triggerPoint => triggerPoint.PointId == pointId)
+                .Select(triggerPoint => new TriggerDM
+                {
+                    Id = triggerPoint.Trigger.Id,
+                    Caregiver = triggerPoint.Trigger.Caregiver,
+                    Name = triggerPoint.Trigger.Name,
+                    Type = triggerPoint.Trigger.Type,
+                    SubType = triggerPoint.Trigger.SubType,
+                    Data = triggerPoint.Trigger.Data,
+                    TriggerTasks = triggerPoint.Trigger.TriggerTasks,
+                    TriggerPoints = triggerPoint.Trigger.TriggerPoints,
+                    Negation = triggerPoint.Negation
+                })
+                .ToListAsync(cancellationToken);
+        }
+
         public List<TriggerDM> ReadAllForPointToAdd(int pointId, int caregiverId)
         {
             return context.Trigers

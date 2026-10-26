@@ -2,7 +2,9 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Assistant.Api.Authentication;
+using Assistant.Api.Contracts;
 using Assistant.Api.Middleware;
+using Assistant.Api.Storage;
 using AssistantDatabase;
 using AssistantDatabase.IRepositories;
 using AssistantDatabase.Repositories;
@@ -34,6 +36,39 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Asystent w codzienności API",
         Version = "v1",
         Description = "Vertical slice: login returns a JWT that later endpoints (/me, plan) will consume."
+    });
+
+    options.UseOneOfForPolymorphism();
+    options.UseAllOfForInheritance();
+    options.SelectSubTypesUsing(baseType =>
+    {
+        if (baseType == typeof(TriggerDto))
+        {
+            return new[] { typeof(TimeTriggerDto), typeof(WeatherTriggerDto) };
+        }
+
+        if (baseType == typeof(CreateTriggerRequest))
+        {
+            return new[] { typeof(CreateTimeTriggerRequest), typeof(CreateWeatherTriggerRequest) };
+        }
+
+        if (baseType == typeof(UpdateTriggerRequest))
+        {
+            return new[] { typeof(UpdateTimeTriggerRequest), typeof(UpdateWeatherTriggerRequest) };
+        }
+
+        return Array.Empty<Type>();
+    });
+    options.SelectDiscriminatorNameUsing(_ => "kind");
+    options.SelectDiscriminatorValueUsing(subType => subType switch
+    {
+        Type type when type == typeof(TimeTriggerDto)
+            || type == typeof(CreateTimeTriggerRequest)
+            || type == typeof(UpdateTimeTriggerRequest) => "time",
+        Type type when type == typeof(WeatherTriggerDto)
+            || type == typeof(CreateWeatherTriggerRequest)
+            || type == typeof(UpdateWeatherTriggerRequest) => "weather",
+        _ => subType.Name
     });
 
     var scheme = new OpenApiSecurityScheme
@@ -110,6 +145,8 @@ builder.Services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+Directory.CreateDirectory(PhotoPaths.GetUploadsRoot(app.Environment));
+
 app.UseExceptionHandling();
 if (app.Environment.IsDevelopment())
 {
@@ -125,6 +162,8 @@ else
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Deliberately do not enable UseStaticFiles: photos under wwwroot/uploads must only be
+// reachable through the authenticated FilesController.
 app.MapControllers();
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));

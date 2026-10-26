@@ -1,4 +1,5 @@
-﻿using AssistantLogic.ViewModel;
+﻿using AssistantDatabase.Model;
+using AssistantLogic.ViewModel;
 
 namespace AssistantLogic.IInternalServices
 {
@@ -6,7 +7,7 @@ namespace AssistantLogic.IInternalServices
     {
         PointDetailsVM GetPointDetailsVM(int id);
         List<PointBaseInformationVM> ListOfPointBaseInfoVMForTask(int taskId);
-        void Add(PointAddEditVM viewModel);
+        TaskPointDM Add(PointAddEditVM viewModel);
         void Update(PointAddEditVM viewModel);
         void Delete(int pointId);
         void AddTrigger(int taskId, int triggerId, bool negation);

@@ -4,10 +4,14 @@ namespace AssistantDatabase.IRepositories
 {
     public interface ITaskRepository
     {
-        void Add(TaskDM task, int caregiverId, int adsPersonID);
+        TaskDM Add(TaskDM task, int caregiverId, int adsPersonID);
 
         TaskDM GetById(int id);
         TaskDM? GetByIdWithDetails(int id);
+        Task<TaskDM?> GetOwnedByCaregiverAsync(
+            int taskId,
+            int caregiverId,
+            CancellationToken cancellationToken = default);
 
         void Update(TaskDM task);
 
@@ -30,6 +34,7 @@ namespace AssistantDatabase.IRepositories
         bool DownUnderNumber(int asdPersonId, int taskId, int number);
 
         void Delete(int id);
+        Task DeleteAsync(TaskDM task, CancellationToken cancellationToken = default);
 
         void DoneTask(int taskId);
         DateTime ReadLastDoneTaskTime(int taskId, DateTime currentDate);

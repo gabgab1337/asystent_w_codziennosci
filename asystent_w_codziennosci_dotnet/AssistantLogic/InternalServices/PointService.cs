@@ -27,12 +27,12 @@ namespace AssistantLogic.InternalServices
             return ToListOfPointBaseInformationVM(pointRepository.ReadAllForTask(taskId));
         }
 
-        public void Add(PointAddEditVM viewModel)
+        public TaskPointDM Add(PointAddEditVM viewModel)
         {
             TaskPointDM dm = new TaskPointDM();
             dm = ToTaskDM(viewModel, dm);
 
-            pointRepository.Add(dm);
+            return pointRepository.Add(dm);
         }
         public void Update(PointAddEditVM viewModel)
         {

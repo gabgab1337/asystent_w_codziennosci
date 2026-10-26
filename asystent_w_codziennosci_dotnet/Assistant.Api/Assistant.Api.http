@@ -34,20 +34,351 @@ Authorization: Bearer {{token}}
 
 ###
 
-# ASD person token only.
+# ASD person token only. Omits ?at=, so the plan is for the server clock.
 GET {{Assistant.Api_HostAddress}}/api/v1/me/plan
 Authorization: Bearer {{token}}
 
 ###
 
-# Caregiver token only, and the protege must belong to that caregiver.
-GET {{Assistant.Api_HostAddress}}/api/v1/proteges/1/plan
+# ASD person token. ?at= replaces DateTime.Now and preserves the supplied offset and time.
+GET {{Assistant.Api_HostAddress}}/api/v1/me/plan?at=2026-09-15T08:30:00%2B02:00
 Authorization: Bearer {{token}}
 
 ###
 
+# Caregiver and ASD-person tokens. Live OpenWeather reading for Opole.
+GET {{Assistant.Api_HostAddress}}/api/v1/weather/current
+Authorization: Bearer {{token}}
+
+###
+
+# Caregiver token only, and the protege must belong to that caregiver.
+# An empty object uses the server clock and the complete live forecast.
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges/1/plan
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Partial caregiver preview override. Every omitted weather field keeps its live value.
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges/1/plan
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "at": "2026-09-15T08:30:00+02:00",
+  "weather": {
+    "temperatureC": 12,
+    "weatherType": "rain",
+    "rainLevel": "lightRain",
+    "wind": "gentleBreeze"
+  }
+}
+
+###
+
 # Expected: 403 with { "error": "Podopieczny nie należy do tego opiekuna" }
-GET {{Assistant.Api_HostAddress}}/api/v1/proteges/999999/plan
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges/999999/plan
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Caregiver token only. Lists ASD users linked to this caregiver.
+GET {{Assistant.Api_HostAddress}}/api/v1/proteges
+Authorization: Bearer {{token}}
+
+###
+
+# Caregiver token only. Password is hashed by UserRepository.Add.
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "new-protege",
+  "password": "secret"
+}
+
+###
+
+# Caregiver token only. protegeId must belong to this caregiver.
+PUT {{Assistant.Api_HostAddress}}/api/v1/me/selected-protege
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "protegeId": 1
+}
+
+###
+
+# Caregiver token only. Username is required; omit password to keep the current one.
+# Expected when the id is missing or belongs to someone else: 403
+# { "error": "Podopieczny nie należy do tego opiekuna" }
+PUT {{Assistant.Api_HostAddress}}/api/v1/proteges/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "renamed-protege",
+  "password": "new-secret"
+}
+
+###
+
+# Caregiver token only. Deletes the protege (and their tasks).
+# If this id is the caregiver's SelectedASD, that column is cleared first.
+DELETE {{Assistant.Api_HostAddress}}/api/v1/proteges/1
+Authorization: Bearer {{token}}
+
+###
+
+# Any authenticated user. Palette names match the MVC picker:
+# White, Blue, Green, Yellow, Red, Cyan, Gray, Indigo, Orange, Pink, Purple, Teal.
+PUT {{Assistant.Api_HostAddress}}/api/v1/me/settings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "colorPalette": "Blue"
+}
+
+###
+
+# Caregiver token only. Every item has kind "time" or "weather".
+GET {{Assistant.Api_HostAddress}}/api/v1/triggers
+Authorization: Bearer {{token}}
+
+###
+
+GET {{Assistant.Api_HostAddress}}/api/v1/triggers/1
+Authorization: Bearer {{token}}
+
+###
+
+# Time subtypes: date, dateRange, weekDay, dateInterval, workingDay, weekend.
+POST {{Assistant.Api_HostAddress}}/api/v1/triggers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "kind": "time",
+  "name": "Poniedziałki",
+  "time": {
+    "subtype": "weekDay",
+    "weekDay": "monday"
+  }
+}
+
+###
+
+# Weather subtypes: default, rain, snow.
+POST {{Assistant.Api_HostAddress}}/api/v1/triggers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "kind": "weather",
+  "name": "Lekki lub umiarkowany deszcz",
+  "weather": {
+    "subtype": "rain",
+    "minTemperature": 0,
+    "maxTemperature": 20,
+    "minRain": "lightRain",
+    "maxRain": "moderateRain",
+    "minWind": "calm",
+    "maxWind": "freshBreeze"
+  }
+}
+
+###
+
+# The kind may change during an update. This example creates a two-day interval.
+PUT {{Assistant.Api_HostAddress}}/api/v1/triggers/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "kind": "time",
+  "name": "Co dwa dni",
+  "time": {
+    "subtype": "dateInterval",
+    "startDate": "2026-10-10",
+    "interval": "everyTwoDays"
+  }
+}
+
+###
+
+# Returns 400 with code "trigger_in_use" when linked to a task or point.
+DELETE {{Assistant.Api_HostAddress}}/api/v1/triggers/1
+Authorization: Bearer {{token}}
+
+###
+
+@protegeId = 1
+@taskId = 1
+@pointId = 1
+@triggerId = 1
+
+# Caregiver token only. Omit weekDay to list the full task order.
+GET {{Assistant.Api_HostAddress}}/api/v1/proteges/{{protegeId}}/tasks?weekDay=monday
+Authorization: Bearer {{token}}
+
+###
+
+# A missing timeBegin/timeEnd means that the corresponding anchor is disabled.
+POST {{Assistant.Api_HostAddress}}/api/v1/proteges/{{protegeId}}/tasks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Śniadanie",
+  "description": "Przygotuj śniadanie",
+  "durationMinutes": 30,
+  "timeBegin": "07:30",
+  "timeEnd": "08:00"
+}
+
+###
+
+GET {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+
+###
+
+PUT {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Śniadanie",
+  "description": "Zaktualizowany opis",
+  "durationMinutes": 25,
+  "timeBegin": "07:30",
+  "timeEnd": null
+}
+
+###
+
+POST {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}/move
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "direction": "up",
+  "weekDay": "monday"
+}
+
+###
+
+PUT {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}/triggers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "triggerId": {{triggerId}},
+  "negation": false
+}
+
+###
+
+DELETE {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}/triggers/{{triggerId}}
+Authorization: Bearer {{token}}
+
+###
+
+POST {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}/points
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Umyj ręce",
+  "description": "Użyj mydła i ciepłej wody"
+}
+
+###
+
+GET {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}
+Authorization: Bearer {{token}}
+
+###
+
+PUT {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Dokładnie umyj ręce",
+  "description": "Myj ręce przez 30 sekund"
+}
+
+###
+
+# Caregiver token only. Replace the local path with an actual JPEG, PNG, GIF, or WebP file.
+# The response includes photoUrl, for example /api/v1/files/0123456789abcdef.jpg.
+POST {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/photo
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=PointPhotoBoundary
+
+--PointPhotoBoundary
+Content-Disposition: form-data; name="photo"; filename="point-photo.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/point-photo.jpg
+--PointPhotoBoundary--
+
+###
+
+# Both caregiver and ASD-person tokens can read a photo through its authenticated URL.
+GET {{Assistant.Api_HostAddress}}/api/v1/files/PASTE_FILE_NAME_FROM_PHOTO_URL_HERE
+Authorization: Bearer {{token}}
+
+###
+
+# Caregiver token only. Removes both the database path and the physical file.
+DELETE {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/photo
+Authorization: Bearer {{token}}
+
+###
+
+POST {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/move
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "direction": "down"
+}
+
+###
+
+PUT {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/triggers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "triggerId": {{triggerId}},
+  "negation": true
+}
+
+###
+
+DELETE {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/triggers/{{triggerId}}
+Authorization: Bearer {{token}}
+
+###
+
+DELETE {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}
+Authorization: Bearer {{token}}
+
+###
+
+DELETE {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}
 Authorization: Bearer {{token}}
 
 ###

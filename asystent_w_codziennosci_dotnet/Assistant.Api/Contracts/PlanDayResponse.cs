@@ -27,13 +27,17 @@ namespace Assistant.Api.Contracts
             int asdPersonId,
             string asdPersonName,
             PlanDayParameters parameters,
-            List<PlanDayTaskVM>? tasks)
+            List<PlanDayTaskVM>? tasks,
+            DateTimeOffset? requestedAt = null)
         {
             return new PlanDayResponse
             {
                 AsdPersonId = asdPersonId,
                 AsdPersonName = asdPersonName,
-                At = DateTime.SpecifyKind(parameters.CurrentDateTime, DateTimeKind.Local),
+                // Echo an explicitly supplied offset exactly. The domain model intentionally uses
+                // wall-clock DateTime values and cannot otherwise retain the original offset.
+                At = requestedAt ?? new DateTimeOffset(
+                    DateTime.SpecifyKind(parameters.CurrentDateTime, DateTimeKind.Local)),
                 ServerTime = DateTimeOffset.Now,
                 Weather = parameters.Weather == null ? null : WeatherDto.From(parameters.Weather),
                 Tasks = (tasks ?? new List<PlanDayTaskVM>())

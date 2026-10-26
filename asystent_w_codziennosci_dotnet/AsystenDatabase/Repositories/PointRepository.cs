@@ -1,5 +1,6 @@
 ﻿using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssistantDatabase.Repositories
 {
@@ -17,10 +18,74 @@ namespace AssistantDatabase.Repositories
             return context.Points.Find(id);
         }
 
+        public Task<TaskPointDM?> GetOwnedByCaregiverAsync(
+            int pointId,
+            int caregiverId,
+            CancellationToken cancellationToken = default)
+        {
+            return context.Points.SingleOrDefaultAsync(
+                point =>
+                    point.Id == pointId
+                    && point.Task.Caregiver.Id == caregiverId
+                    && point.Task.AsdPerson.Type == UserType.asdPerson
+                    && point.Task.AsdPerson.CaregiverId == caregiverId,
+                cancellationToken);
+        }
+
+        public Task<bool> IsPhotoOwnedByCaregiverAsync(
+            string photoPath,
+            int caregiverId,
+            CancellationToken cancellationToken = default)
+        {
+            return context.Points.AnyAsync(
+                point =>
+                    point.PhotoUrl == photoPath
+                    && point.Task.Caregiver.Id == caregiverId
+                    && point.Task.AsdPerson.Type == UserType.asdPerson
+                    && point.Task.AsdPerson.CaregiverId == caregiverId,
+                cancellationToken);
+        }
+
+        public Task<bool> IsPhotoOwnedByAsdPersonAsync(
+            string photoPath,
+            int asdPersonId,
+            CancellationToken cancellationToken = default)
+        {
+            return context.Points.AnyAsync(
+                point =>
+                    point.PhotoUrl == photoPath
+                    && point.Task.AsdPerson.Id == asdPersonId
+                    && point.Task.AsdPerson.Type == UserType.asdPerson,
+                cancellationToken);
+        }
+
         public List<TaskPointDM> ReadAllForTask(int taskId)
         {
             return context.Points.Where(p => p.TaskId == taskId).OrderBy(x=> x.Number).ToList();
         }
+
+        public Task<List<string>> ReadPhotoPathsForTaskAsync(
+            int taskId,
+            CancellationToken cancellationToken = default)
+        {
+            return context.Points
+                .Where(point => point.TaskId == taskId && point.PhotoUrl != null)
+                .Select(point => point.PhotoUrl!)
+                .ToListAsync(cancellationToken);
+        }
+
+        public Task<List<string>> ReadPhotoPathsForAsdPersonAsync(
+            int asdPersonId,
+            CancellationToken cancellationToken = default)
+        {
+            return context.Points
+                .Where(point =>
+                    point.Task.AsdPerson.Id == asdPersonId
+                    && point.PhotoUrl != null)
+                .Select(point => point.PhotoUrl!)
+                .ToListAsync(cancellationToken);
+        }
+
         public List<TaskPointDM> ReadAllDonePointsForTask(int taskId)
         {
             return context.Points
@@ -34,7 +99,7 @@ namespace AssistantDatabase.Repositories
                .OrderBy(x => x.Number).ToList();
         }
 
-        public void Add(TaskPointDM point)
+        public TaskPointDM Add(TaskPointDM point)
         {
             int? maxNumber = context.Points
                         .Where(p => p.TaskId == point.TaskId)
@@ -52,12 +117,22 @@ namespace AssistantDatabase.Repositories
 
             context.Points.Add(point);
             context.SaveChanges();
+            return point;
         }
         public void Update(TaskPointDM point)
         {
             context.Points.Update(point);
             context.SaveChanges();
         }
+
+        public async Task UpdateAsync(
+            TaskPointDM point,
+            CancellationToken cancellationToken = default)
+        {
+            context.Points.Update(point);
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
         public void Up(int taskId, int pointId)
         {
             TaskPointDM? point = context.Points.Find(pointId);
@@ -131,8 +206,25 @@ namespace AssistantDatabase.Repositories
             }
         }
 
+        public async Task DeleteAsync(
+            TaskPointDM point,
+            CancellationToken cancellationToken = default)
+        {
+            context.Points.Remove(point);
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
         public void AddTrigger(int pointId, int triggerId, bool negation)
         {
+            TriggerPointDM? existing = context.TriggerPoints
+                .SingleOrDefault(link => link.TriggerId == triggerId && link.PointId == pointId);
+            if (existing != null)
+            {
+                existing.Negation = negation;
+                context.SaveChanges();
+                return;
+            }
+
             TaskPointDM point = context.Points.Find(pointId);
             TriggerDM trigger = context.Trigers.Find(triggerId);
             var triggerPoint = new TriggerPointDM

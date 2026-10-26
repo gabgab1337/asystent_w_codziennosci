@@ -25,7 +25,7 @@
             }
             set
             {
-                currentDateTime = new DateTime(value.Year, value.Month, value.Day,value.Hour,value.Minute,0);
+                currentDateTime = value;
                 CurrentDate = value;
             }
         }

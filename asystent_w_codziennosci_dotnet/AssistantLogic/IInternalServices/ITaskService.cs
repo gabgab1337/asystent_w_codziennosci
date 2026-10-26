@@ -1,4 +1,5 @@
-﻿using AssistantLogic.Triggers.TriggersTime;
+﻿using AssistantDatabase.Model;
+using AssistantLogic.Triggers.TriggersTime;
 using AssistantLogic.ViewModel;
 
 namespace AssistantLogic.IInternalServices
@@ -9,7 +10,7 @@ namespace AssistantLogic.IInternalServices
 
         TaskDetailsVM GetTaskDetailsVM(int id, int caregiverId);
 
-        void Add(TaskAddEditVM viewModel, int caregiverId, int adsPersonID);
+        TaskDM Add(TaskAddEditVM viewModel, int caregiverId, int adsPersonID);
 
         void Update(TaskAddEditVM model);
 
