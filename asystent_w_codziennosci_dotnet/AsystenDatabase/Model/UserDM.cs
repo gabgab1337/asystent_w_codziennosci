@@ -29,6 +29,13 @@ namespace AssistantDatabase.Model
         [AllowNull]
         public int? SelectedASD { get; set; }
 
+        /// <summary>
+        /// Task this ASD person is doing right now. Replaces the MVC session value.
+        /// Null means free time. Do not store the old sentinel id -1.
+        /// </summary>
+        [AllowNull]
+        public int? CurrentTaskId { get; set; }
+
         [AllowNull]
         public string? ColorsPalete { get; set; }
 

@@ -5,6 +5,11 @@ namespace AssistantDatabase.IRepositories
     public interface IPointRepository
     {
         TaskPointDM GetById(int id);
+
+        /// <summary>
+        /// The point when its task belongs to <paramref name="asdPersonId"/>. Missing and someone else's point are both null.
+        /// </summary>
+        TaskPointDM? ReadOwnedByAsdPerson(int pointId, int asdPersonId);
         Task<TaskPointDM?> GetOwnedByCaregiverAsync(
             int pointId,
             int caregiverId,

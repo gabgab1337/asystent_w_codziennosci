@@ -382,3 +382,46 @@ DELETE {{Assistant.Api_HostAddress}}/api/v1/tasks/{{taskId}}
 Authorization: Bearer {{token}}
 
 ###
+
+# ASD person token. Requires the Users.CurrentTaskId column (add it with a migration before calling).
+# A real task comes back as kind "task". Nothing left today is:
+# { "kind": "freeTime", "task": null, "previousTaskName": null, "nextTaskName": null, "serverTime": "..." }
+# Descriptions are plain text. A task with no points of its own has one point with id null and isSynthetic true.
+GET {{Assistant.Api_HostAddress}}/api/v1/me/current-activity
+Authorization: Bearer {{token}}
+
+###
+
+# Header poll. state is "normal", "lowTime" (under 5 minutes), "postTime", or "nothingToDo".
+# remainingMinutes is timeEnd minus now, so it is negative during postTime, and null for nothingToDo.
+GET {{Assistant.Api_HostAddress}}/api/v1/me/current-activity/summary
+Authorization: Bearer {{token}}
+
+###
+
+# Marks that point done for today. The same call again is 200 and does not insert a second row.
+# pointId is required: an empty body, {}, null, or a non-positive id returns 400.
+# Finishing the last real point closes the task and clears CurrentTaskId atomically.
+# Completion does not fetch weather. The next activity GET selects the next trigger-eligible task.
+# A point that is missing or belongs to someone else is 403
+# { "error": "Punkt nie należy do tego użytkownika", "code": "point_not_owned" }
+POST {{Assistant.Api_HostAddress}}/api/v1/me/current-activity/complete-point
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "pointId": {{pointId}}
+}
+
+###
+
+# ASD person token. taskId must belong to this user. Completing an already finished task is 200.
+# Use this explicit endpoint for a synthetic point. No request body is needed because the route
+# identifies the exact task. Completion does not fetch weather and clears CurrentTaskId only when
+# it still points to this task, so retrying cannot complete or clear the next task.
+# Expected when the id is missing or someone else's:
+# 403 { "error": "Zadanie nie należy do tego użytkownika", "code": "task_not_owned" }
+POST {{Assistant.Api_HostAddress}}/api/v1/me/tasks/{{taskId}}/complete
+Authorization: Bearer {{token}}
+
+###

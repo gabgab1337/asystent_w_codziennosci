@@ -7,6 +7,11 @@ namespace AssistantDatabase.IRepositories
         TaskDM Add(TaskDM task, int caregiverId, int adsPersonID);
 
         TaskDM GetById(int id);
+
+        /// <summary>
+        /// The task when it belongs to <paramref name="asdPersonId"/>. Missing and someone else's task are both null.
+        /// </summary>
+        TaskDM? ReadOwnedByAsdPerson(int taskId, int asdPersonId);
         TaskDM? GetByIdWithDetails(int id);
         Task<TaskDM?> GetOwnedByCaregiverAsync(
             int taskId,

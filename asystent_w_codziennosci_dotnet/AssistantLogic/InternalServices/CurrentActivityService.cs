@@ -1,24 +1,172 @@
-﻿using AssistantDatabase.IRepositories;
+﻿using System.Data;
+using AssistantDatabase;
+using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
 using AssistantLogic.IInternalServices;
 using AssistantLogic.Model;
 using AssistantLogic.ViewModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssistantLogic.InternalServices
 {
     public class CurrentActivityService : ICurrentActivityService
     {
 
-        private ITaskRepository taskRepository;
-        private IPointRepository pointRepository;
-        private ITriggerService triggerService;
-        private ITimeService timeService;
-        public CurrentActivityService(ITaskRepository taskRepository, ITriggerService triggerService, IPointRepository pointRepository, ITimeService timeService)
+        private readonly DataContext context;
+        private readonly ITaskRepository taskRepository;
+        private readonly IPointRepository pointRepository;
+        private readonly IUserRepository userRepository;
+        private readonly ITriggerService triggerService;
+        private readonly ITimeService timeService;
+
+        public CurrentActivityService(
+            DataContext context,
+            ITaskRepository taskRepository,
+            ITriggerService triggerService,
+            IPointRepository pointRepository,
+            IUserRepository userRepository,
+            ITimeService timeService)
         {
+            this.context = context;
             this.taskRepository = taskRepository;
             this.triggerService = triggerService;
             this.pointRepository = pointRepository;
+            this.userRepository = userRepository;
             this.timeService = timeService;
+        }
+
+        public async Task<ActivityCompletionResult> CompletePointAsync(
+            int asdPersonId,
+            int pointId,
+            CancellationToken cancellationToken = default)
+        {
+            // Serializable prevents two concurrent retries from both observing the point/task as
+            // unfinished. Repository SaveChanges calls enlist in this transaction automatically.
+            await using var transaction = await context.Database.BeginTransactionAsync(
+                IsolationLevel.Serializable,
+                cancellationToken);
+
+            TaskPointDM? point = pointRepository.ReadOwnedByAsdPerson(pointId, asdPersonId);
+            UserDM? user = userRepository.GetById(asdPersonId);
+            if (point == null || user == null)
+            {
+                return new ActivityCompletionResult { Found = false };
+            }
+
+            DateTime today = DateTime.Today;
+            bool pointWasDone = pointRepository
+                .ReadAllDonePointsForTask(point.TaskId)
+                .Any(donePoint => donePoint.Id == pointId);
+
+            if (!pointWasDone)
+            {
+                pointRepository.DonePoint(pointId);
+            }
+
+            bool taskHasRemainingPoints = pointRepository
+                .ReadAllToDoPointsForTask(point.TaskId)
+                .Count > 0;
+            bool taskWasDone = taskRepository
+                .ReadAllDoneTasksForAsdPerson(asdPersonId, today)
+                .Any(doneTask => doneTask.Id == point.TaskId);
+
+            bool taskCompleted = taskWasDone || !taskHasRemainingPoints;
+            if (!taskWasDone && !taskHasRemainingPoints)
+            {
+                taskRepository.DoneTask(point.TaskId);
+            }
+
+            // Weather-dependent trigger selection belongs to the next GET. Clearing the pointer
+            // is the safe state transition here: the next read chooses the next eligible task.
+            if (taskCompleted && user.CurrentTaskId == point.TaskId)
+            {
+                userRepository.SetCurrentTaskId(user.Id, null);
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+
+            return new ActivityCompletionResult
+            {
+                Found = true,
+                TaskId = point.TaskId,
+                PointId = pointId,
+                AlreadyCompleted = pointWasDone,
+                TaskCompleted = taskCompleted,
+                CurrentTaskId = user.CurrentTaskId
+            };
+        }
+
+        public async Task<ActivityCompletionResult> CompleteTaskAsync(
+            int asdPersonId,
+            int taskId,
+            CancellationToken cancellationToken = default)
+        {
+            await using var transaction = await context.Database.BeginTransactionAsync(
+                IsolationLevel.Serializable,
+                cancellationToken);
+
+            TaskDM? task = taskRepository.ReadOwnedByAsdPerson(taskId, asdPersonId);
+            UserDM? user = userRepository.GetById(asdPersonId);
+            if (task == null || user == null)
+            {
+                return new ActivityCompletionResult { Found = false };
+            }
+
+            bool taskWasDone = taskRepository
+                .ReadAllDoneTasksForAsdPerson(asdPersonId, DateTime.Today)
+                .Any(doneTask => doneTask.Id == taskId);
+
+            if (!taskWasDone)
+            {
+                taskRepository.DoneTask(taskId);
+            }
+
+            // Do not clear a pointer that has already moved on. This makes a retry of the same
+            // explicit task id harmless even when a GET selected the next task in the meantime.
+            if (user.CurrentTaskId == taskId)
+            {
+                userRepository.SetCurrentTaskId(user.Id, null);
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+
+            return new ActivityCompletionResult
+            {
+                Found = true,
+                TaskId = taskId,
+                PointId = null,
+                AlreadyCompleted = taskWasDone,
+                TaskCompleted = true,
+                CurrentTaskId = user.CurrentTaskId
+            };
+        }
+
+        public async Task<ActualActivityVM> CreateAndPersistActualActivityAsync(
+            int asdPersonId,
+            PlanDayParameters parameters,
+            DateTime currentDate,
+            CancellationToken cancellationToken = default)
+        {
+            await using var transaction = await context.Database.BeginTransactionAsync(
+                IsolationLevel.Serializable,
+                cancellationToken);
+
+            UserDM user = userRepository.GetById(asdPersonId)
+                ?? throw new InvalidOperationException($"User {asdPersonId} no longer exists.");
+
+            ActualActivityVM activity = CreateActualActivity(
+                asdPersonId,
+                user.CurrentTaskId,
+                parameters,
+                currentDate);
+
+            int? nextTaskId = activity.TaskVM != null && activity.TaskVM.Id > 0
+                ? activity.TaskVM.Id
+                : null;
+            userRepository.SetCurrentTaskId(asdPersonId, nextTaskId);
+
+            await transaction.CommitAsync(cancellationToken);
+            return activity;
         }
 
         public void DonePoint(int taskId, int? pointId)
@@ -51,6 +199,10 @@ namespace AssistantLogic.InternalServices
                     if (listToDoTaskDM.Count > 0)
                     {
                         task = listToDoTaskDM[0];
+                        // GetCurrentTask already took the previous task out of this list. Drop the one
+                        // just promoted too, so the next iteration cannot complete it again and the
+                        // following-task name is not the task now in progress.
+                        listToDoTaskDM.RemoveAt(0);
                         toDoPoints = GetToDoPoints(task, parameters);
                         donePoints = GetDanePoints(task);
                     }

@@ -57,6 +57,18 @@ namespace AssistantDatabase.Repositories
             context.SaveChanges();
         }
 
+        public void SetCurrentTaskId(int userId, int? currentTaskId)
+        {
+            UserDM? user = context.Users.Find(userId);
+            if (user == null || user.CurrentTaskId == currentTaskId)
+            {
+                return;
+            }
+
+            user.CurrentTaskId = currentTaskId;
+            context.SaveChanges();
+        }
+
         public void AssignHashedPassword(UserDM user, string password)
         {
             // Update writes Password as-is. A new secret has to be hashed here, or the next

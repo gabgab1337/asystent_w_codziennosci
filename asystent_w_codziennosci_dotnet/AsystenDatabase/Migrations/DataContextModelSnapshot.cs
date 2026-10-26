@@ -17,7 +17,7 @@ namespace AssistantDatabase.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0-preview.2.24128.4")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -242,6 +242,9 @@ namespace AssistantDatabase.Migrations
 
                     b.Property<string>("ColorsPalete")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CurrentTaskId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");

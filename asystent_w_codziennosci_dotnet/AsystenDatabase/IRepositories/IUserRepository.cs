@@ -13,6 +13,11 @@ namespace AssistantDatabase.IRepositories
         void Update(UserDM user);
 
         /// <summary>
+        /// Persists <see cref="UserDM.CurrentTaskId"/>. No-op when the user is missing or the value is unchanged.
+        /// </summary>
+        void SetCurrentTaskId(int userId, int? currentTaskId);
+
+        /// <summary>
         /// Replaces <paramref name="user"/>.Password with the SHA-256 hash <see cref="Add"/> stores.
         /// Does not save; persist with <see cref="Update"/>.
         /// </summary>

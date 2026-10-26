@@ -18,6 +18,12 @@ namespace AssistantDatabase.Repositories
             return context.Points.Find(id);
         }
 
+        public TaskPointDM? ReadOwnedByAsdPerson(int pointId, int asdPersonId)
+        {
+            return context.Points.SingleOrDefault(point =>
+                point.Id == pointId && point.Task.AsdPerson.Id == asdPersonId);
+        }
+
         public Task<TaskPointDM?> GetOwnedByCaregiverAsync(
             int pointId,
             int caregiverId,
@@ -251,18 +257,34 @@ namespace AssistantDatabase.Repositories
         public void DonePoint(int pointId)
         {
             TaskPointDM? point = context.Points.Find(pointId);
-            if (point != null)
+            if (point == null)
             {
-                var donePoint = new DonePointDM
-                {
-                    PointId = pointId,
-                    Point = point,
-                    FinishDate = DateTime.Today
-                };
-                context.DonePoints.Add(donePoint);
+                return;
+            }
+
+            // (PointId, FinishDate) is the key. A second completion the same day is a no-op.
+            bool alreadyDone = context.DonePoints.Any(done =>
+                done.PointId == pointId && done.FinishDate == DateTime.Today);
+            if (alreadyDone)
+            {
+                return;
+            }
+
+            var donePoint = new DonePointDM
+            {
+                PointId = pointId,
+                Point = point,
+                FinishDate = DateTime.Today
+            };
+            context.DonePoints.Add(donePoint);
+            try
+            {
                 context.SaveChanges();
             }
-          
+            catch (DbUpdateException exception) when (DuplicateKey.IsViolation(exception))
+            {
+                context.Entry(donePoint).State = EntityState.Detached;
+            }
         }
         
 

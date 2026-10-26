@@ -42,6 +42,12 @@ namespace AssistantDatabase.Repositories
             return context.Tasks.Find(id);
         }
 
+        public TaskDM? ReadOwnedByAsdPerson(int taskId, int asdPersonId)
+        {
+            return context.Tasks.SingleOrDefault(task =>
+                task.Id == taskId && task.AsdPerson.Id == asdPersonId);
+        }
+
         public TaskDM? GetByIdWithDetails(int id)
         {
             return context.Tasks.Find(id);
@@ -284,17 +290,34 @@ namespace AssistantDatabase.Repositories
         public void DoneTask(int taskId)
         {
             TaskDM? task = context.Tasks.Find(taskId);
-            if (task != null)
+            if (task == null)
             {
-                var doneTask = new DoneTaskDM
-                {
-                    TaskId = taskId,
-                    Task = task,
-                    FinishDate = DateTime.Today,
-                    FinishTime = DateTime.Now
-                };
-                context.DoneTasks.Add(doneTask);
+                return;
+            }
+
+            // (TaskId, FinishDate) is the key. A second completion the same day is a no-op.
+            bool alreadyDone = context.DoneTasks.Any(done =>
+                done.TaskId == taskId && done.FinishDate == DateTime.Today);
+            if (alreadyDone)
+            {
+                return;
+            }
+
+            var doneTask = new DoneTaskDM
+            {
+                TaskId = taskId,
+                Task = task,
+                FinishDate = DateTime.Today,
+                FinishTime = DateTime.Now
+            };
+            context.DoneTasks.Add(doneTask);
+            try
+            {
                 context.SaveChanges();
+            }
+            catch (DbUpdateException exception) when (DuplicateKey.IsViolation(exception))
+            {
+                context.Entry(doneTask).State = EntityState.Detached;
             }
         }
     }
