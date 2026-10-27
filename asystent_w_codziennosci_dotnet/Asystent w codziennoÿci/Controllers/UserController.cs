@@ -108,11 +108,11 @@ namespace Asystent_w_codzienności.Controllers
         }
 
         [HttpPost]
-        public IActionResult LogIn(UserLoginVM model)
+        public async Task<IActionResult> LogIn(UserLoginVM model)
         {
             try
             {
-                UserSessionModel? user = userService.LogIn(model);
+                UserSessionModel? user = await userService.LogIn(model);
                 if (user != null)
                 {
                     sessionManager.User = user;

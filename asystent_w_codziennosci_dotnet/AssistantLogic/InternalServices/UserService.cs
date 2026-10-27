@@ -70,9 +70,11 @@ namespace AssistantLogic.InternalServices
             return user;
         }
 
-        public UserSessionModel? LogIn(UserLoginVM model)
+        public async Task<UserSessionModel?> LogIn(
+            UserLoginVM model,
+            CancellationToken cancellationToken = default)
         {
-            UserDM? userDM = userRepository.IsLogIn(model.Username, model.Password);
+            UserDM? userDM = await userRepository.IsLogIn(model.Username, model.Password, cancellationToken);
             if (userDM == null)
             {
                 return null;
@@ -82,22 +84,15 @@ namespace AssistantLogic.InternalServices
             user.UserName = userDM.Username;
             user.Type = userDM.Type;
 
-            if(user.Type == UserType.caregiver)
+            if(user.Type == UserType.caregiver && userDM.SelectedASD != null)
             {
-                user.SelectedProtageId = userDM.SelectedASD;
-                if (userDM.SelectedASD != null)
+                UserDM? selectedUser = await userRepository.GetByIdAsync(userDM.SelectedASD.Value, cancellationToken);
+                if (selectedUser != null
+                    && selectedUser.Type == UserType.asdPerson
+                    && selectedUser.CaregiverId == userDM.Id)
                 {
-                    UserDM? protege = userRepository.GetProtegeById(user.SelectedProtageId);
-                    if(protege!=null)
-                    {
-                        user.SelectedProtageName = protege.Username;
-                    }
-                    else
-                    {
-                        user.SelectedProtageId = null;
-                    }
-                    
-                    
+                    user.SelectedProtageId = selectedUser.Id;
+                    user.SelectedProtageName = selectedUser.Username;
                 }
             }
 

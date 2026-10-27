@@ -9,7 +9,7 @@ namespace AssistantLogic.IInternalServices
     {
         List<UserBaseInformationVM> ReadBaseInforOfUsersForAdmin(int id);
         List<AsdUserBaseInformationVM> ReadBaseInfoOfAsdPersonForCaregiver(int caregiver, int? selectProtageId);
-        UserSessionModel? LogIn(UserLoginVM model);
+        Task<UserSessionModel?> LogIn(UserLoginVM model, CancellationToken cancellationToken = default);
         void CreateUserForAdmin(UserAddVM vm);
         void CreateUserForCaregiver(UserAddVM vm, int caregiverId);
         UserSessionModel SelectASDPerson(UserSessionModel user, int id);

@@ -7,6 +7,7 @@ using AssistantLogic.Model;
 using AssistantLogic.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Assistant.Api.Controllers.v1
 {
@@ -32,17 +33,20 @@ namespace Assistant.Api.Controllers.v1
         }
 
         [AllowAnonymous]
+        [EnableRateLimiting("login-policy")]
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public ActionResult<LoginResponse> LogIn(LoginRequest request)
+        public async Task<IActionResult> LogIn(LoginRequest request, CancellationToken cancellationToken)
         {
-            UserSessionModel? user = userService.LogIn(new UserLoginVM
+            UserSessionModel? user = await userService.LogIn(new UserLoginVM
             {
                 Username = request.Username,
                 Password = request.Password
-            });
+            }, cancellationToken);
 
             if (user == null)
             {
@@ -53,10 +57,13 @@ namespace Assistant.Api.Controllers.v1
         }
 
         [AllowAnonymous]
+        [EnableRateLimiting("login-policy")]
         [HttpPost("refresh")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        public ActionResult<LoginResponse> Refresh(RefreshTokenRequest request)
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<IActionResult> Refresh(RefreshTokenRequest request, CancellationToken cancellationToken)
         {
             if (!accessTokenService.TryValidateRefresh(
                     request.AccessToken,
@@ -66,13 +73,13 @@ namespace Assistant.Api.Controllers.v1
                 return Unauthorized(new ErrorResponse(INVALID_REFRESH_TOKEN));
             }
 
-            UserDM? userEntity = userRepository.GetById(userId);
+            UserDM? userEntity = await userRepository.GetByIdAsync(userId, cancellationToken);
             if (userEntity == null)
             {
                 return Unauthorized(new ErrorResponse(INVALID_REFRESH_TOKEN));
             }
 
-            return Ok(CreateLoginResponse(ToSessionModel(userEntity)));
+            return Ok(CreateLoginResponse(await ToSessionModel(userEntity, cancellationToken)));
         }
 
         private LoginResponse CreateLoginResponse(UserSessionModel user)
@@ -88,14 +95,14 @@ namespace Assistant.Api.Controllers.v1
             };
         }
 
-        private UserSessionModel ToSessionModel(UserDM user)
+        private async Task<UserSessionModel> ToSessionModel(UserDM user, CancellationToken cancellationToken)
         {
             int? selectedProtegeId = null;
             string? selectedProtegeName = null;
 
             if (user.Type == UserType.caregiver && user.SelectedASD.HasValue)
             {
-                UserDM? protege = userRepository.GetProtegeById(user.SelectedASD);
+                UserDM? protege = await userRepository.GetByIdAsync(user.SelectedASD.Value, cancellationToken);
                 if (protege?.Type == UserType.asdPerson
                     && protege.CaregiverId == user.Id)
                 {

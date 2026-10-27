@@ -1,6 +1,8 @@
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
 using Assistant.Api.Middleware;
@@ -13,12 +15,22 @@ using AssistantLogic.IInternalServices;
 using AssistantLogic.InternalServices;
 using AssistantLogic.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    // Keep the default KnownNetworks and KnownProxies so only loopback proxies are trusted.
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
+builder.Services.AddProblemDetails();
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
@@ -93,6 +105,8 @@ builder.Services.AddSwaggerGen(options =>
 // Domain wiring mirrors AsystentView/Program.cs, minus everything session related.
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<DataContext>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<ITaskRepository, TaskRepository>();
 builder.Services.AddTransient<ITriggerRepository, TriggerRepository>();
@@ -158,9 +172,56 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        HttpContext httpContext = context.HttpContext;
+        httpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
+        {
+            httpContext.Response.Headers.RetryAfter = Math.Ceiling(retryAfter.TotalSeconds)
+                .ToString(CultureInfo.InvariantCulture);
+        }
+
+        await httpContext.Response.WriteAsJsonAsync(
+            new ProblemDetails
+            {
+                Status = StatusCodes.Status429TooManyRequests,
+                Title = "Too Many Requests",
+                Type = "https://tools.ietf.org/html/rfc6585#section-4",
+                Detail = "Too many requests. Please try again later."
+            },
+            options: null,
+            contentType: "application/problem+json",
+            cancellationToken: cancellationToken);
+    };
+    options.AddPolicy("login-policy", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+    options.AddPolicy("health-policy", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+});
+
 var app = builder.Build();
 Directory.CreateDirectory(PhotoPaths.GetUploadsRoot(app.Environment));
 
+app.UseForwardedHeaders();
 app.UseExceptionHandling();
 if (app.Environment.IsDevelopment())
 {
@@ -169,10 +230,12 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseHttpsRedirection();
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
+app.UseRouting();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -180,6 +243,6 @@ app.UseAuthorization();
 // reachable through the authenticated FilesController.
 app.MapControllers();
 
-app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+app.MapHealthChecks("/health").RequireRateLimiting("health-policy");
 
 app.Run();

@@ -1,5 +1,6 @@
 ﻿using AssistantDatabase.IRepositories;
 using AssistantDatabase.Model;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -24,10 +25,15 @@ namespace AssistantDatabase.Repositories
             context.Users.Add(user);
             context.SaveChanges();
         }
-        public UserDM? IsLogIn(string userName, string password)
+        public async Task<UserDM?> IsLogIn(
+            string userName,
+            string password,
+            CancellationToken cancellationToken = default)
         {
-            UserDM? user = context.Users.FirstOrDefault(u => u.Username == userName && u.Password == HashPassword(password));
-            return user;
+            string passwordHash = HashPassword(password);
+            return await context.Users.FirstOrDefaultAsync(
+                u => u.Username == userName && u.Password == passwordHash,
+                cancellationToken);
         }
 
         public UserDM GetById(int id)
