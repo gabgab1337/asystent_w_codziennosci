@@ -11,5 +11,11 @@ namespace Assistant.Api.Authentication
         public const string UniqueName = "unique_name";
 
         public const string Role = "role";
+
+        public const string TokenUse = "token_use";
+
+        public const string AccessTokenUse = "access";
+
+        public const string RefreshTokenUse = "refresh";
     }
 }

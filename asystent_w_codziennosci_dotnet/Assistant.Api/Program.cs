@@ -28,6 +28,7 @@ builder.Services
     });
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMemoryCache();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -133,10 +134,25 @@ builder.Services
             ValidAudience = jwtOptions.Audience,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+            ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha256 },
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromSeconds(30),
             NameClaimType = JwtClaims.UniqueName,
             RoleClaimType = JwtClaims.Role
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                if (context.Principal?.HasClaim(
+                    JwtClaims.TokenUse,
+                    JwtClaims.AccessTokenUse) != true)
+                {
+                    context.Fail("Only access tokens can authorize API requests.");
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
 

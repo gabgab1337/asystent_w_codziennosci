@@ -155,7 +155,7 @@ namespace Assistant.Api.Contracts
                 IsSynthetic = point.Id == null,
                 Name = point.Name ?? string.Empty,
                 Description = PlanText.ToPlainText(point.Description),
-                PhotoUrl = PhotoPaths.ToDownloadPath(point.PhotoUrl),
+                PhotoUrl = PhotoPaths.ToDownloadPath(point.Id, point.PhotoUrl),
                 Done = point.Done,
                 Active = point.Active
             };

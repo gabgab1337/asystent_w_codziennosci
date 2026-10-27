@@ -28,6 +28,19 @@ Content-Type: application/json
 ###
 
 @token = PASTE_ACCESS_TOKEN_HERE
+@refreshToken = PASTE_REFRESH_TOKEN_HERE
+
+# Access-token expiration is intentionally ignored here; the refresh token must
+# still have a valid signature, lifetime, and token_use=refresh claim.
+POST {{Assistant.Api_HostAddress}}/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "accessToken": "{{token}}",
+  "refreshToken": "{{refreshToken}}"
+}
+
+###
 
 GET {{Assistant.Api_HostAddress}}/api/v1/me
 Authorization: Bearer {{token}}
@@ -225,6 +238,7 @@ Authorization: Bearer {{token}}
 @taskId = 1
 @pointId = 1
 @triggerId = 1
+@fileTicket = PASTE_TICKET_FROM_RESPONSE_HERE
 
 # Caregiver token only. Omit weekDay to list the full task order.
 GET {{Assistant.Api_HostAddress}}/api/v1/proteges/{{protegeId}}/tasks?weekDay=monday
@@ -321,7 +335,7 @@ Content-Type: application/json
 ###
 
 # Caregiver token only. Replace the local path with an actual JPEG, PNG, GIF, or WebP file.
-# The response includes photoUrl, for example /api/v1/files/0123456789abcdef.jpg.
+# The response includes the point-scoped photoUrl, for example /api/v1/files/1.
 POST {{Assistant.Api_HostAddress}}/api/v1/points/{{pointId}}/photo
 Authorization: Bearer {{token}}
 Content-Type: multipart/form-data; boundary=PointPhotoBoundary
@@ -335,9 +349,16 @@ Content-Type: image/jpeg
 
 ###
 
-# Both caregiver and ASD-person tokens can read a photo through its authenticated URL.
-GET {{Assistant.Api_HostAddress}}/api/v1/files/PASTE_FILE_NAME_FROM_PHOTO_URL_HERE
+# First request a one-time ticket with the standard Bearer header.
+# Both the caregiver who owns the point and its ASD person may request one.
+POST {{Assistant.Api_HostAddress}}/api/v1/files/{{pointId}}/ticket
 Authorization: Bearer {{token}}
+
+###
+
+# Use the returned ticket within 60 seconds. No Authorization header is sent on
+# this request; the ticket is removed immediately and cannot be reused.
+GET {{Assistant.Api_HostAddress}}/api/v1/files/{{pointId}}?ticket={{fileTicket}}
 
 ###
 

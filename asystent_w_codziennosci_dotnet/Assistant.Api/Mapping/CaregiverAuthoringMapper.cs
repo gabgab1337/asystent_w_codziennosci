@@ -53,7 +53,7 @@ namespace Assistant.Api.Mapping
                 Name = point.Name,
                 Description = PlanText.ToPlainText(point.Description),
                 Number = point.Number,
-                PhotoUrl = PhotoPaths.ToDownloadPath(point.PhotoUrl)
+                PhotoUrl = PhotoPaths.ToDownloadPath(point.Id, point.PhotoUrl)
             };
         }
 
@@ -68,7 +68,7 @@ namespace Assistant.Api.Mapping
                 Name = point.Name,
                 Description = PlanText.ToPlainText(point.Description),
                 Number = point.Number,
-                PhotoUrl = PhotoPaths.ToDownloadPath(point.PhotoUrl),
+                PhotoUrl = PhotoPaths.ToDownloadPath(point.Id, point.PhotoUrl),
                 Triggers = triggers.Select(ToAttachedTriggerDto).ToList()
             };
         }
@@ -79,7 +79,7 @@ namespace Assistant.Api.Mapping
                 id: 0,
                 request.Name,
                 request.Description,
-                request.DurationMinutes,
+                request.ResolveDurationMinutes(),
                 request.TimeBegin,
                 request.TimeEnd);
         }
@@ -90,7 +90,7 @@ namespace Assistant.Api.Mapping
                 id,
                 request.Name,
                 request.Description,
-                request.DurationMinutes,
+                request.ResolveDurationMinutes(),
                 request.TimeBegin,
                 request.TimeEnd);
         }

@@ -15,5 +15,7 @@ namespace Assistant.Api.Authentication
         public string Key { get; set; } = string.Empty;
 
         public int AccessTokenMinutes { get; set; } = 480;
+
+        public int RefreshTokenDays { get; set; } = 30;
     }
 }

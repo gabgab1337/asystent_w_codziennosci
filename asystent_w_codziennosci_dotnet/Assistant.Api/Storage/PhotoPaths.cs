@@ -27,10 +27,10 @@ namespace Assistant.Api.Storage
             return AllowedExtensions.Contains(Path.GetExtension(fileName));
         }
 
-        public static string? ToDownloadPath(string? storedPath)
+        public static string? ToDownloadPath(int? pointId, string? storedPath)
         {
-            return TryGetStoredFileName(storedPath, out string fileName)
-                ? DownloadPathPrefix + Uri.EscapeDataString(fileName)
+            return pointId > 0 && TryGetStoredFileName(storedPath, out _)
+                ? DownloadPathPrefix + pointId.Value
                 : null;
         }
 
