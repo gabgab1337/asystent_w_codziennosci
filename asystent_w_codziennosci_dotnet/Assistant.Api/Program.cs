@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -6,6 +7,7 @@ using System.Threading.RateLimiting;
 using Assistant.Api.Authentication;
 using Assistant.Api.Contracts;
 using Assistant.Api.Middleware;
+using Assistant.Api.OpenApi;
 using Assistant.Api.Storage;
 using AssistantDatabase;
 using AssistantDatabase.IRepositories;
@@ -15,12 +17,15 @@ using AssistantLogic.IInternalServices;
 using AssistantLogic.InternalServices;
 using AssistantLogic.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,8 +52,16 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Asystent w codzienności API",
         Version = "v1",
-        Description = "Vertical slice: login returns a JWT that later endpoints (/me, plan) will consume."
+        Description = "HTTP JSON API for the Asystent w codzienności KMP clients."
     });
+
+    string xmlDocumentationPath = Path.Combine(
+        AppContext.BaseDirectory,
+        $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
+    options.IncludeXmlComments(xmlDocumentationPath, includeControllerXmlComments: true);
+    options.SupportNonNullableReferenceTypes();
+    options.SchemaFilter<RequiredNotNullableSchemaFilter>();
+    options.SchemaFilter<PolymorphismSchemaFilter>();
 
     options.UseOneOfForPolymorphism();
     options.UseAllOfForInheritance();
@@ -99,7 +112,9 @@ builder.Services.AddSwaggerGen(options =>
     };
 
     options.AddSecurityDefinition(scheme.Reference.Id, scheme);
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement { { scheme, Array.Empty<string>() } });
+    options.OperationFilter<PolymorphismOperationFilter>();
+    options.OperationFilter<AuthorizeOperationFilter>();
+    options.OperationFilter<EmptyResponseOperationFilter>();
 });
 
 // Domain wiring mirrors AsystentView/Program.cs, minus everything session related.
@@ -166,6 +181,27 @@ builder.Services
                 }
 
                 return Task.CompletedTask;
+            },
+            OnChallenge = async context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(
+                    new ErrorResponse("Token is missing or invalid") { Code = "unauthorized" },
+                    options: null,
+                    contentType: "application/json",
+                    cancellationToken: context.HttpContext.RequestAborted);
+            },
+            OnForbidden = async context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(
+                    new ErrorResponse("You do not have the required role") { Code = "forbidden" },
+                    options: null,
+                    contentType: "application/json",
+                    cancellationToken: context.HttpContext.RequestAborted);
             }
         };
     });
@@ -246,3 +282,32 @@ app.MapControllers();
 app.MapHealthChecks("/health").RequireRateLimiting("health-policy");
 
 app.Run();
+
+internal sealed class AuthorizeOperationFilter : IOperationFilter
+{
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    {
+        IList<object> metadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
+        if (metadata.OfType<IAllowAnonymous>().Any()
+            || !metadata.OfType<IAuthorizeData>().Any())
+        {
+            return;
+        }
+
+        operation.Security ??= new List<OpenApiSecurityRequirement>();
+        operation.Security.Add(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+    }
+}

@@ -48,9 +48,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPost("tasks/{taskId:int}/points")]
         [ProducesResponseType(typeof(PointDetailsDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<PointDetailsDto> Create(int taskId, CreatePointRequest request)
         {
             UserDM? caregiver = FindCaller();
@@ -74,8 +83,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpGet("points/{id:int}")]
         [ProducesResponseType(typeof(PointDetailsDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<PointDetailsDto> GetById(int id)
         {
             UserDM? caregiver = FindCaller();
@@ -95,9 +110,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPut("points/{id:int}")]
         [ProducesResponseType(typeof(PointDetailsDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<PointDetailsDto> Update(int id, UpdatePointRequest request)
         {
             UserDM? caregiver = FindCaller();
@@ -121,9 +145,18 @@ namespace Assistant.Api.Controllers.v1
         [RequestSizeLimit(MAX_PHOTO_BYTES)]
         [RequestFormLimits(MultipartBodyLengthLimit = MAX_PHOTO_BYTES)]
         [ProducesResponseType(typeof(PointDetailsDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status400BadRequest,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public async Task<ActionResult<PointDetailsDto>> UploadPhoto(
             int id,
             IFormFile? photo,
@@ -209,8 +242,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpDelete("points/{id:int}/photo")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public async Task<IActionResult> DeletePhoto(
             int id,
             CancellationToken cancellationToken)
@@ -250,8 +289,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpDelete("points/{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public async Task<IActionResult> Delete(
             int id,
             CancellationToken cancellationToken)
@@ -279,9 +324,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPost("points/{id:int}/move")]
         [ProducesResponseType(typeof(PointDetailsDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<PointDetailsDto> Move(int id, MovePointRequest request)
         {
             UserDM? caregiver = FindCaller();
@@ -310,9 +364,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPut("points/{pointId:int}/triggers")]
         [ProducesResponseType(typeof(PointDetailsDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<PointDetailsDto> AttachTrigger(
             int pointId,
             AttachTriggerRequest request)
@@ -343,8 +406,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpDelete("points/{pointId:int}/triggers/{triggerId:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public IActionResult DetachTrigger(int pointId, int triggerId)
         {
             UserDM? caregiver = FindCaller();
