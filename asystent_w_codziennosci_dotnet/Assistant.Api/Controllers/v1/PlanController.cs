@@ -5,10 +5,12 @@ using AssistantDatabase.Model;
 using AssistantLogic.IExternalServices;
 using AssistantLogic.IInternalServices;
 using AssistantLogic.Model;
+using AssistantLogic.Services;
 using AssistantLogic.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Diagnostics;
+using System.Numerics;
 
 namespace Assistant.Api.Controllers.v1
 {
@@ -29,6 +31,7 @@ namespace Assistant.Api.Controllers.v1
         private readonly IUserRepository userRepository;
         private readonly IWeatherService weatherService;
         private readonly ILogger<PlanController> logger;
+        private readonly IWeatherService weatherService;
 
         public PlanController(
             IPlanDayService planDayService,
@@ -41,6 +44,20 @@ namespace Assistant.Api.Controllers.v1
             this.weatherService = weatherService;
             this.logger = logger;
         }
+        /*
+        [HttpGet("api/v1/weather-cache-test")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
+        public async Task<IActionResult> GetWeather()
+        {
+            long start1 = Stopwatch.GetTimestamp();
+            WeatherModel weather = await weatherService.GetCurrentWeather();
+            TimeSpan elapsedTime1 = Stopwatch.GetElapsedTime(start1);
+            long start2 = Stopwatch.GetTimestamp();
+            await weatherService.GetCurrentWeather();
+            TimeSpan elapsedTime2 = Stopwatch.GetElapsedTime(start2);
+            return Ok(new { weather, elapsedTime1, elapsedTime2 });
+        }*/
 
         [HttpGet("api/v1/me/plan")]
         [Authorize(Roles = Roles.AsdPerson)]
