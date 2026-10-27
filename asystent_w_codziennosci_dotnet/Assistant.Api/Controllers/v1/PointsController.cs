@@ -126,7 +126,7 @@ namespace Assistant.Api.Controllers.v1
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PointDetailsDto>> UploadPhoto(
             int id,
-            [FromForm] IFormFile? photo,
+            IFormFile? photo,
             CancellationToken cancellationToken)
         {
             UserDM? caregiver = await FindCallerAsync(cancellationToken);
