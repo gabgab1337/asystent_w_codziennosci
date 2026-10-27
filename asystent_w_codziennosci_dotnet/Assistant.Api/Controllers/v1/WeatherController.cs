@@ -24,9 +24,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpGet("api/v1/weather/current")]
         [ProducesResponseType(typeof(WeatherDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status503ServiceUnavailable,
+            "application/json")]
         public async Task<ActionResult<WeatherDto>> GetCurrent()
         {
             try

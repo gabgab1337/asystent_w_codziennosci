@@ -62,10 +62,26 @@ namespace Assistant.Api.Controllers.v1
         [HttpGet("api/v1/me/plan")]
         [Authorize(Roles = Roles.AsdPerson)]
         [ProducesResponseType(typeof(PlanDayResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status500InternalServerError,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status503ServiceUnavailable,
+            "application/json")]
         public async Task<ActionResult<PlanDayResponse>> GetMyPlan(
             [FromQuery] DateTimeOffset? at,
             CancellationToken cancellationToken)
@@ -104,11 +120,26 @@ namespace Assistant.Api.Controllers.v1
         [HttpPost("api/v1/proteges/{protegeId:int}/plan")]
         [Authorize(Roles = Roles.Caregiver)]
         [ProducesResponseType(typeof(PlanDayResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status500InternalServerError,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status503ServiceUnavailable,
+            "application/json")]
         public async Task<ActionResult<PlanDayResponse>> CreateProtegePlanPreview(
             int protegeId,
             [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PlanOverrideRequest? request,

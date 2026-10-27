@@ -48,9 +48,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpGet("current-activity")]
         [ProducesResponseType(typeof(CurrentActivityResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status503ServiceUnavailable,
+            "application/json")]
         public async Task<ActionResult<CurrentActivityResponse>> GetCurrent(CancellationToken cancellationToken)
         {
             Response.Headers.Append("Cache-Control", "no-store");
@@ -77,9 +86,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpGet("current-activity/summary")]
         [ProducesResponseType(typeof(CurrentActivitySummaryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status503ServiceUnavailable,
+            "application/json")]
         public async Task<ActionResult<CurrentActivitySummaryResponse>> GetSummary(
             CancellationToken cancellationToken)
         {
@@ -112,9 +130,18 @@ namespace Assistant.Api.Controllers.v1
         /// </summary>
         [HttpPost("current-activity/complete-point")]
         [ProducesResponseType(typeof(ActivityCompletionResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public async Task<ActionResult<ActivityCompletionResponse>> CompletePoint(
             CompletePointRequest request,
             CancellationToken cancellationToken)
@@ -145,8 +172,14 @@ namespace Assistant.Api.Controllers.v1
         /// </summary>
         [HttpPost("tasks/{taskId:int}/complete")]
         [ProducesResponseType(typeof(ActivityCompletionResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public async Task<ActionResult<ActivityCompletionResponse>> CompleteTask(
             int taskId,
             CancellationToken cancellationToken)

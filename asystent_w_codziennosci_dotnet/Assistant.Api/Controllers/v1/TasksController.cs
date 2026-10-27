@@ -46,8 +46,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpGet("proteges/{protegeId:int}/tasks")]
         [ProducesResponseType(typeof(List<TaskDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<List<TaskDto>> GetForProtege(
             int protegeId,
             [FromQuery] TriggerWeekDay? weekDay)
@@ -85,9 +91,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPost("proteges/{protegeId:int}/tasks")]
         [ProducesResponseType(typeof(TaskDetailsDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<TaskDetailsDto> Create(int protegeId, CreateTaskRequest request)
         {
             UserDM? caregiver = FindCaller();
@@ -113,8 +128,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpGet("tasks/{id:int}")]
         [ProducesResponseType(typeof(TaskDetailsDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<TaskDetailsDto> GetById(int id)
         {
             UserDM? caregiver = FindCaller();
@@ -134,9 +155,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPut("tasks/{id:int}")]
         [ProducesResponseType(typeof(TaskDetailsDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<TaskDetailsDto> Update(int id, UpdateTaskRequest request)
         {
             UserDM? caregiver = FindCaller();
@@ -157,8 +187,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpDelete("tasks/{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public async Task<IActionResult> Delete(
             int id,
             CancellationToken cancellationToken)
@@ -192,9 +228,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPost("tasks/{id:int}/move")]
         [ProducesResponseType(typeof(TaskDetailsDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<TaskDetailsDto> Move(int id, MoveTaskRequest request)
         {
             UserDM? caregiver = FindCaller();
@@ -227,9 +272,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPut("tasks/{taskId:int}/triggers")]
         [ProducesResponseType(typeof(TaskDetailsDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<TaskDetailsDto> AttachTrigger(
             int taskId,
             AttachTriggerRequest request)
@@ -260,8 +314,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpDelete("tasks/{taskId:int}/triggers/{triggerId:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public IActionResult DetachTrigger(int taskId, int triggerId)
         {
             UserDM? caregiver = FindCaller();

@@ -35,8 +35,14 @@ namespace Assistant.Api.Controllers.v1
         [Authorize(Roles = Roles.Caregiver + "," + Roles.AsdPerson)]
         [HttpPost("{id:int}/ticket")]
         [ProducesResponseType(typeof(FileTicketResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<FileTicketResponse>> CreateTicket(
             int id,
@@ -79,6 +85,12 @@ namespace Assistant.Api.Controllers.v1
 
         [AllowAnonymous]
         [HttpGet("{id:int}")]
+        [Produces(
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp",
+            "application/octet-stream")]
         [ProducesResponseType(typeof(PhysicalFileResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

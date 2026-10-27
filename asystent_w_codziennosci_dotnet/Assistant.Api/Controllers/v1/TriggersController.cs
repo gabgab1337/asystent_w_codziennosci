@@ -39,7 +39,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpGet]
         [ProducesResponseType(typeof(List<TriggerDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<List<TriggerDto>> Get()
         {
             UserDM? caregiver = FindCaller();
@@ -62,9 +69,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(TriggerDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status501NotImplemented)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status501NotImplemented,
+            "application/json")]
         public ActionResult<TriggerDto> GetById(int id)
         {
             UserDM? caregiver = FindCaller();
@@ -93,8 +109,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPost]
         [ProducesResponseType(typeof(TriggerDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<TriggerDto> Create(CreateTriggerRequest request)
         {
             UserDM? caregiver = FindCaller();
@@ -112,9 +138,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(TriggerDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<TriggerDto> Update(int id, UpdateTriggerRequest request)
         {
             UserDM? caregiver = FindCaller();
@@ -143,9 +178,18 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status400BadRequest,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public IActionResult Delete(int id)
         {
             UserDM? caregiver = FindCaller();

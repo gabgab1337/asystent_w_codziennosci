@@ -27,8 +27,14 @@ namespace Assistant.Api.Controllers.v1
 
         [HttpGet]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status500InternalServerError,
+            "application/problem+json")]
         public ActionResult<UserDto> Get()
         {
             int? userId = User.GetUserId();
@@ -52,8 +58,14 @@ namespace Assistant.Api.Controllers.v1
         /// </summary>
         [HttpPut("settings")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
         public ActionResult<UserDto> UpdateSettings(UpdateSettingsRequest request)
         {
             int? userId = User.GetUserId();
@@ -76,9 +88,18 @@ namespace Assistant.Api.Controllers.v1
         [HttpPut("selected-protege")]
         [Authorize(Roles = Roles.Caregiver)]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status403Forbidden,
+            "application/json")]
         public ActionResult<UserDto> SelectProtege(SelectProtegeRequest request)
         {
             int? caregiverId = User.GetUserId();

@@ -36,10 +36,22 @@ namespace Assistant.Api.Controllers.v1
         [EnableRateLimiting("login-policy")]
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ProblemDetails),
+            StatusCodes.Status429TooManyRequests,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status500InternalServerError,
+            "application/problem+json")]
         public async Task<IActionResult> LogIn(LoginRequest request, CancellationToken cancellationToken)
         {
             UserSessionModel? user = await userService.LogIn(new UserLoginVM
@@ -60,9 +72,18 @@ namespace Assistant.Api.Controllers.v1
         [EnableRateLimiting("login-policy")]
         [HttpPost("refresh")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        [ProducesResponseType(
+            typeof(ValidationProblemDetails),
+            StatusCodes.Status400BadRequest,
+            "application/problem+json")]
+        [ProducesResponseType(
+            typeof(ErrorResponse),
+            StatusCodes.Status401Unauthorized,
+            "application/json")]
+        [ProducesResponseType(
+            typeof(ProblemDetails),
+            StatusCodes.Status429TooManyRequests,
+            "application/problem+json")]
         public async Task<IActionResult> Refresh(RefreshTokenRequest request, CancellationToken cancellationToken)
         {
             if (!accessTokenService.TryValidateRefresh(
